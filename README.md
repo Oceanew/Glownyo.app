@@ -54,20 +54,25 @@ les identifiants ci-dessous.
 
 1. Créez un compte sur [app.brevo.com](https://app.brevo.com) (l'offre gratuite suffit
    pour démarrer — 300 emails/jour).
-2. **Validez l'adresse d'expédition.** Menu **Expéditeurs, domaines et dédicace** →
-   onglet **Expéditeurs** → ajoutez l'adresse que GlowNyo utilisera pour envoyer ses
-   emails (ex. `no-reply@glownyo.app` ou, à défaut de domaine, une adresse Gmail que vous
-   contrôlez) → confirmez via le lien reçu par email. **Sans cette étape, Brevo refuse
-   tous les envois.** Si vous avez un nom de domaine, faites plutôt la vérification du
-   domaine entier (même menu, onglet **Domaines**) pour une meilleure délivrabilité —
-   quelques enregistrements DNS (SPF/DKIM) à ajouter chez votre registrar.
+2. **Authentifiez le domaine `glownyo.app`** (recommandé — GlowNyo le possède déjà chez
+   Hostinger). Menu **Expéditeurs, domaine, IP** → onglet **Domaines** → **Ajouter un
+   domaine** → `glownyo.app`. Brevo affiche 3-4 enregistrements DNS (un TXT
+   d'authentification/SPF, un ou deux CNAME pour DKIM). Sur Hostinger : **hPanel** →
+   **Domaines** → `glownyo.app` → **DNS / Registre DNS** → **Ajouter un enregistrement**,
+   et recopiez chaque ligne (type, nom, valeur) exactement telle qu'affichée par Brevo.
+   La propagation est généralement rapide chez Hostinger (quelques minutes à quelques
+   heures) ; revenez sur Brevo et cliquez **Vérifier** une fois les enregistrements
+   ajoutés. Ajoutez aussi l'enregistrement DMARC que Brevo recommande à cette étape (TXT
+   sur `_dmarc.glownyo.app`) pour lever complètement l'avertissement de conformité
+   Google/Yahoo/Microsoft.
+   Une fois le domaine authentifié, ajoutez l'expéditeur (onglet **Expéditeurs**) —
+   par exemple `no-reply@glownyo.app` ou `reservations@glownyo.app`.
 
-   > ⚠️ Une adresse Gmail/Outlook vérifiée fonctionne pour envoyer, mais Brevo ne peut
-   > pas y poser de DKIM/DMARC personnalisés (ce sont des domaines "freemail" que vous ne
-   > contrôlez pas) — Brevo l'affiche en avertissement de conformité. Les emails partent
-   > quand même, avec un risque de spam plus élevé. Dès que possible, authentifiez plutôt
-   > `glownyo.app` (onglet **Domaines**) et envoyez depuis `no-reply@glownyo.app` pour une
-   > délivrabilité fiable.
+   > ⚠️ Vous pouvez aussi démarrer avec une adresse Gmail/Outlook déjà vérifiée : ça
+   > fonctionne pour envoyer, mais Brevo ne peut pas y poser de DKIM/DMARC (domaine
+   > "freemail" que vous ne contrôlez pas), d'où l'avertissement de conformité et un
+   > risque de spam plus élevé. Utile pour tester vite, mais basculez sur `glownyo.app`
+   > dès que possible.
 3. **Récupérez vos identifiants SMTP.** Cliquez sur votre nom (en haut à droite) →
    **SMTP & API** → onglet **SMTP**. Vous y trouvez :
    - le **login SMTP** (généralement votre adresse email de compte Brevo),
