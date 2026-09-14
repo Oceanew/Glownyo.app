@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #0A0A0A;
+  color: #F5F0E6;
+  overflow-x: clip;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 40 33% 93%;
+    --card: 0 0% 7%;
+    --card-foreground: 40 33% 93%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 40 33% 93%;
+    --primary: 37 65% 47%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 40 33% 93%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 40 10% 68%;
+    --accent: 37 65% 47%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 15% 18%;
+    --input: 40 15% 18%;
+    --ring: 37 65% 47%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: "Playfair Display", serif;
+  }
+}
+
+@layer utilities {
+  .text-gold {
+    color: #C9922A;
+  }
+  .bg-gold {
+    background-color: #C9922A;
+  }
+  .border-gold {
+    border-color: #C9922A;
+  }
+  .gold-gradient {
+    background: linear-gradient(135deg, #E8C877 0%, #C9922A 50%, #9E6E1C 100%);
+  }
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #E8C877 0%, #C9922A 60%, #9E6E1C 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+::selection {
+  background: #C9922A;
+  color: #0A0A0A;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up, .animate-marquee { animation: none; }
+}
+
+/* thin gold scrollbar */
+::-webkit-scrollbar { width: 9px; }
+::-webkit-scrollbar-track { background: #0A0A0A; }
+::-webkit-scrollbar-thumb { background: #3a2f16; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #C9922A; }
