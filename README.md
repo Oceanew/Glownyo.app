@@ -61,6 +61,13 @@ les identifiants ci-dessous.
    tous les envois.** Si vous avez un nom de domaine, faites plutôt la vérification du
    domaine entier (même menu, onglet **Domaines**) pour une meilleure délivrabilité —
    quelques enregistrements DNS (SPF/DKIM) à ajouter chez votre registrar.
+
+   > ⚠️ Une adresse Gmail/Outlook vérifiée fonctionne pour envoyer, mais Brevo ne peut
+   > pas y poser de DKIM/DMARC personnalisés (ce sont des domaines "freemail" que vous ne
+   > contrôlez pas) — Brevo l'affiche en avertissement de conformité. Les emails partent
+   > quand même, avec un risque de spam plus élevé. Dès que possible, authentifiez plutôt
+   > `glownyo.app` (onglet **Domaines**) et envoyez depuis `no-reply@glownyo.app` pour une
+   > délivrabilité fiable.
 3. **Récupérez vos identifiants SMTP.** Cliquez sur votre nom (en haut à droite) →
    **SMTP & API** → onglet **SMTP**. Vous y trouvez :
    - le **login SMTP** (généralement votre adresse email de compte Brevo),
