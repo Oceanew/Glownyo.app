@@ -458,6 +458,10 @@ const BookingPage = () => {
                 <span>{slotError}</span>
               </div>}
               {error && <p className="sm:col-span-2 text-sm text-red-400">{error}</p>}
+              <p className="sm:col-span-2 text-xs text-[#F5F0E6]/45">
+                En envoyant cette demande, vous acceptez nos{' '}
+                <Link to="/cgv" className="text-gold hover:brightness-110 transition">conditions générales de vente</Link>.
+              </p>
               <button type="submit" disabled={submitting} className="sm:col-span-2 gold-gradient text-[#0A0A0A] font-semibold px-6 py-4 rounded-full flex items-center justify-center gap-2 hover:brightness-110 transition disabled:opacity-60">
                 {submitting ? <>
                     <Loader2 size={18} className="animate-spin" /> Envoi en cours...

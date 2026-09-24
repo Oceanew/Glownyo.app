@@ -18,6 +18,7 @@ import LoginPage from './pages/LoginPage';
 import MesRendezVousPage from './pages/MesRendezVousPage';
 import AccountPage from './pages/AccountPage';
 import ProviderSpacePage from './pages/ProviderSpacePage';
+import TermsPage from './pages/TermsPage';
 
 function App() {
     return (
@@ -36,6 +37,7 @@ function App() {
                         <Route path="/admin/prestataires" element={<AdminRoute><AdminProvidersPage /></AdminRoute>} />
                         <Route path="/devenir-prestataire" element={<ProviderSignupPage />} />
                         <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/cgv" element={<TermsPage />} />
                         <Route path="/connexion" element={<LoginPage />} />
                         <Route path="/mes-rendez-vous" element={<ProtectedRoute><MesRendezVousPage /></ProtectedRoute>} />
                         <Route path="/mon-compte" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />
