@@ -71,7 +71,7 @@ const AccountPage = () => {
         Mon compte
       </h1>
       <p className="mt-3 text-[#F5F0E6]/65">
-        Gérez votre accès GlowNyo. Cet espace est commun aux clientes et aux prestataires disposant
+        Gérez votre accès GlowNyo. Cet espace est commun aux personnes clientes et aux personnes prestataires disposant
         d'un compte.
       </p>
 

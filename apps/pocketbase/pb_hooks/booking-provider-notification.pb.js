@@ -23,10 +23,10 @@ onRecordAfterCreateSuccess((e) => {
     <div style="font-family: Montserrat, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0A0A0A; color: #F5F0E6; padding: 32px; border: 1px solid #C9922A33; border-radius: 16px;">
       <h1 style="font-family: 'Playfair Display', Georgia, serif; color: #C9922A; margin: 0 0 8px;">Nouvelle réservation reçue</h1>
       <p style="color: #F5F0E6; opacity: 0.8;">Bonjour ${provider},</p>
-      <p style="color: #F5F0E6; opacity: 0.8;">Une cliente vient de réserver une prestation chez vous via GlowNyo. Voici les détails du rendez-vous :</p>
+      <p style="color: #F5F0E6; opacity: 0.8;">Une personne vient de réserver une prestation chez vous via GlowNyo. Voici les détails du rendez-vous :</p>
 
       <table cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 16px 0; color: #F5F0E6;">
-        <tr><td style="color: #C9922A; font-weight: 600;">Cliente</td><td>${name}</td></tr>
+        <tr><td style="color: #C9922A; font-weight: 600;">Personne cliente</td><td>${name}</td></tr>
         <tr><td style="color: #C9922A; font-weight: 600;">Téléphone</td><td>${phone}</td></tr>
         <tr><td style="color: #C9922A; font-weight: 600;">Email</td><td>${email}</td></tr>
         <tr><td style="color: #C9922A; font-weight: 600;">Prestation</td><td>${service}</td></tr>
@@ -36,7 +36,7 @@ onRecordAfterCreateSuccess((e) => {
       </table>
 
       <p style="color: #F5F0E6; opacity: 0.7; font-size: 14px;">
-        Contactez rapidement la cliente pour confirmer le créneau. Pour toute question, répondez à cet email
+        Contactez rapidement la personne qui a réservé pour confirmer le créneau. Pour toute question, répondez à cet email
         ou contactez l'équipe GlowNyo sur WhatsApp.
       </p>
 

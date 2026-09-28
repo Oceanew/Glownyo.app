@@ -177,7 +177,7 @@ const ProviderSpacePage = () => {
               Aucune réservation pour l'instant
             </h3>
             <p className="mt-2 text-sm text-[#F5F0E6]/60 max-w-sm mx-auto">
-              Dès qu'une cliente réservera une prestation chez vous, la demande
+              Dès qu'une personne cliente réservera une prestation chez vous, la demande
               apparaîtra ici.
             </p>
           </div>

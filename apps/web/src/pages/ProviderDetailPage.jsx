@@ -3,6 +3,7 @@ import { Star, MapPin, MessageCircle, CalendarCheck, ArrowLeft, Clock, Instagram
 import { waLinkTo } from '@/data/site';
 import { usePublicProviders } from '@/lib/usePublicProviders';
 import { Helmet } from 'react-helmet';
+import ProviderReviews from '@/components/ProviderReviews';
 
 const ProviderDetailPage = () => {
   const { slug } = useParams();
@@ -30,7 +31,7 @@ const ProviderDetailPage = () => {
           onClick={() => navigate('/prestataires')}
           className="flex items-center gap-2 text-sm text-[#F5F0E6]/60 hover:text-gold transition mb-8"
         >
-          <ArrowLeft size={16} /> Toutes les prestataires
+          <ArrowLeft size={16} /> Retour aux prestataires
         </button>
 
         <div className="grid lg:grid-cols-[minmax(0,420px)_1fr] gap-10 lg:gap-14">
@@ -133,6 +134,9 @@ const ProviderDetailPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Avis clients — note moyenne, nombre d'avis, liste paginée et formulaire */}
+        <ProviderReviews providerName={p.name} />
       </div>
     </div>
   );

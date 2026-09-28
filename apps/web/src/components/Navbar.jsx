@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, UserCircle, Scissors, ShieldCheck } from 'lucide-react';
+import { Menu, X, UserCircle, Scissors, ShieldCheck, ChevronDown, LayoutDashboard, CalendarDays, Users, Star } from 'lucide-react';
 import { LOGO } from '@/data/site';
 import { useAuth } from '@/contexts/AuthContext';
 import SpaceSwitcher from '@/components/SpaceSwitcher';
@@ -16,6 +16,7 @@ const links = [
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [adminOpen, setAdminOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { isAuthed, isProvider, isDualRole, isAdmin, logout } = useAuth();
@@ -77,12 +78,37 @@ const Navbar = () => {
                 </Link>
               )}
               {isAdmin && (
-                <Link
-                  to="/admin/prestataires"
-                  className="inline-flex items-center gap-1.5 whitespace-nowrap leading-none text-sm tracking-wide text-gold hover:brightness-110 transition"
+                <div
+                  className="relative"
+                  onMouseEnter={() => setAdminOpen(true)}
+                  onMouseLeave={() => setAdminOpen(false)}
                 >
-                  <ShieldCheck size={16} /> Administration
-                </Link>
+                  <button
+                    onClick={() => setAdminOpen((o) => !o)}
+                    className="inline-flex items-center gap-1.5 whitespace-nowrap leading-none text-sm tracking-wide text-gold hover:brightness-110 transition"
+                  >
+                    <ShieldCheck size={16} /> Administration
+                    <ChevronDown size={14} className={`transition-transform ${adminOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  {adminOpen && (
+                    <div className="absolute right-0 top-full pt-3 z-50">
+                      <div className="w-56 rounded-2xl border border-[#C9922A]/20 bg-[#0F0F0F] shadow-xl shadow-black/40 py-2">
+                        <Link to="/admin" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                          <LayoutDashboard size={15} className="text-gold" /> Tableau de bord
+                        </Link>
+                        <Link to="/admin/reservations" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                          <CalendarDays size={15} className="text-gold" /> Réservations
+                        </Link>
+                        <Link to="/admin/prestataires" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                          <Users size={15} className="text-gold" /> Prestataires
+                        </Link>
+                        <Link to="/admin/avis" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                          <Star size={15} className="text-gold" /> Avis clients
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
               )}
               <Link
                 to="/mon-compte"
@@ -142,17 +168,27 @@ const Navbar = () => {
           </ul>
           <Link
             to="/reservation"
-            className="mt-5 block text-center gold-gradient text-[#0A0A0A] font-semibold px-6 py-3 rounded-full"
+            className="mt-5 block text-center gold-gradient text-[#0A0A0A] font-semibold px-6 py-3.5 rounded-full"
           >
             Réserver un rendez-vous
           </Link>
-          <Link
-            to={isAuthed ? '/mon-compte' : '/connexion'}
-            className="mt-3 flex items-center justify-center gap-1.5 text-sm text-[#F5F0E6]/80 hover:text-gold transition"
-          >
-            <UserCircle size={16} className="text-gold" />
-            {isAuthed ? 'Mon compte' : 'Connexion / Créer un compte'}
-          </Link>
+          {!isAuthed ? (
+            <Link
+              to="/connexion"
+              className="mt-3 flex items-center justify-center gap-2 text-base font-medium text-[#F5F0E6] border border-[#C9922A]/40 rounded-full px-6 py-3.5 hover:bg-[#C9922A]/10 hover:text-gold transition"
+            >
+              <UserCircle size={18} className="text-gold" />
+              Connexion / Créer un compte
+            </Link>
+          ) : (
+            <Link
+              to="/mon-compte"
+              className="mt-3 flex items-center justify-center gap-2 text-base font-medium text-[#F5F0E6] border border-[#C9922A]/40 rounded-full px-6 py-3.5 hover:bg-[#C9922A]/10 hover:text-gold transition"
+            >
+              <UserCircle size={18} className="text-gold" />
+              Mon compte
+            </Link>
+          )}
           {isAuthed && (
             <>
               {isDualRole ? (
@@ -176,12 +212,23 @@ const Navbar = () => {
                 </Link>
               )}
               {isAdmin && (
-                <Link
-                  to="/admin/prestataires"
-                  className="mt-2 flex items-center justify-center gap-1.5 text-sm text-gold hover:brightness-110 transition"
-                >
-                  <ShieldCheck size={15} /> Administration
-                </Link>
+                <div className="mt-3 rounded-2xl border border-[#C9922A]/20 bg-[#0A0A0A] py-2">
+                  <p className="px-4 py-1.5 text-[11px] uppercase tracking-widest text-gold flex items-center gap-1.5">
+                    <ShieldCheck size={13} /> Administration
+                  </p>
+                  <Link to="/admin" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                    <LayoutDashboard size={15} className="text-gold" /> Tableau de bord
+                  </Link>
+                  <Link to="/admin/reservations" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                    <CalendarDays size={15} className="text-gold" /> Réservations
+                  </Link>
+                  <Link to="/admin/prestataires" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                    <Users size={15} className="text-gold" /> Prestataires
+                  </Link>
+                  <Link to="/admin/avis" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                    <Star size={15} className="text-gold" /> Avis clients
+                  </Link>
+                </div>
               )}
               <button
                 onClick={logout}
