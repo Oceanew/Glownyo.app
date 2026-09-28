@@ -11,8 +11,10 @@ import BookingPage from './pages/BookingPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import PartnersPage from './pages/PartnersPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminBookingsPage from './pages/AdminBookingsPage';
 import AdminProvidersPage from './pages/AdminProvidersPage';
+import AdminReviewsPage from './pages/AdminReviewsPage';
 import ProviderSignupPage from './pages/ProviderSignupPage';
 import LoginPage from './pages/LoginPage';
 import MesRendezVousPage from './pages/MesRendezVousPage';
@@ -35,8 +37,10 @@ function App() {
                         <Route path="/a-propos" element={<AboutPage />} />
                         <Route path="/faq" element={<FAQPage />} />
                         <Route path="/partenaires" element={<PartnersPage />} />
+                        <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
                         <Route path="/admin/reservations" element={<AdminRoute><AdminBookingsPage /></AdminRoute>} />
                         <Route path="/admin/prestataires" element={<AdminRoute><AdminProvidersPage /></AdminRoute>} />
+                        <Route path="/admin/avis" element={<AdminRoute><AdminReviewsPage /></AdminRoute>} />
                         <Route path="/devenir-prestataire" element={<ProviderSignupPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/cgv" element={<TermsPage />} />

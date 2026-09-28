@@ -79,7 +79,7 @@ const LoginPage = () => {
         // Administrators land in the admin space; everyone else goes to the
         // page they came from (or their rendez-vous by default).
         if (rec?.role === 'admin') {
-          navigate('/admin/prestataires', { replace: true });
+          navigate('/admin', { replace: true });
           return;
         }
       } else if (mode === 'signup') {

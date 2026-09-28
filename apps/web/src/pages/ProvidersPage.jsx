@@ -15,7 +15,7 @@ const ProvidersPage = () => {
     <div className="pt-32 pb-24 mx-auto max-w-[90rem] px-5 sm:px-8">
       <Helmet>
         <title>Nos prestataires — GlowNyo</title>
-        <meta name="description" content="Découvrez les professionnelles beauté & bien-être de Cotonou sur GlowNyo : coiffure, henné, esthétique, manucure et plus encore." />
+        <meta name="description" content="Découvrez les personnes prestataires beauté & bien-être de Cotonou sur GlowNyo : coiffure, henné, esthétique, manucure et plus encore." />
       </Helmet>
       <div className="max-w-2xl">
         <span className="text-xs tracking-widest uppercase text-gold">Nos prestataires</span>
@@ -23,7 +23,7 @@ const ProvidersPage = () => {
           Des talents d'exception
         </h1>
         <p className="mt-5 text-[#F5F0E6]/70 text-lg">
-          Découvrez les professionnelles beauté & bien-être qui subliment l'Afrique, une prestation à la fois.
+          Découvrez les personnes prestataires beauté & bien-être qui subliment l'Afrique, une prestation à la fois.
         </p>
       </div>
 
@@ -97,13 +97,13 @@ const ProvidersPage = () => {
             Inscrivez-vous <span className="text-gold-gradient">gratuitement</span> pendant le lancement
           </h2>
           <p className="mt-5 text-[#F5F0E6]/70 text-lg">
-            Rejoignez les premières professionnelles beauté & bien-être de Cotonou sur GlowNyo. Zéro frais
+            Rejoignez les premières personnes prestataires beauté & bien-être de Cotonou sur GlowNyo. Zéro frais
             aujourd'hui, une visibilité immédiate demain. Les places de la vague de lancement partent vite.
           </p>
 
           <div className="mt-10 grid sm:grid-cols-3 gap-4">
             {[
-              { icon: TrendingUp, title: 'Visibilité immédiate', text: 'Votre profil mis en avant auprès de nouvelles clientes.' },
+              { icon: TrendingUp, title: 'Visibilité immédiate', text: 'Votre profil mis en avant auprès de nouvelles personnes clientes.' },
               { icon: ShieldCheck, title: 'Zéro commission', text: 'Aucun frais pendant toute la période de lancement.' },
               { icon: CalendarCheck, title: 'Réservations simplifiées', text: 'Gérez vos rendez-vous sans effort, en un seul endroit.' },
             ].map((b) => (

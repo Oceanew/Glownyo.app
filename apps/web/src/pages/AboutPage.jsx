@@ -8,7 +8,7 @@ const AboutPage = () => {
         <h1 className="mt-3 font-display text-4xl sm:text-6xl font-semibold leading-tight max-w-3xl">
           Célébrer la beauté noire, <span className="text-gold-gradient italic">avec sophistication</span>
         </h1>
-        <p className="mt-6 text-lg text-[#F5F0E6]/70 max-w-2xl leading-relaxed">GlowNyo est né d'une vision et d'une conviction simple : la beauté et le bien-être afro méritent une plateforme à la hauteur de leur richesse. Nous connectons les clientes aux meilleures prestataires du continent, dans une expérience élégante, chaleureuse et résolument moderne.</p>
+        <p className="mt-6 text-lg text-[#F5F0E6]/70 max-w-2xl leading-relaxed">GlowNyo est né d'une vision et d'une conviction simple : la beauté et le bien-être afro méritent une plateforme à la hauteur de leur richesse. Nous connectons les personnes clientes aux prestataires de référence du continent, dans une expérience élégante, chaleureuse et résolument moderne.</p>
       </section>
 
       {/* Image + story */}
@@ -19,7 +19,7 @@ const AboutPage = () => {
         <div>
           <h2 className="font-display text-3xl font-semibold">Notre histoire</h2>
           <p className="mt-5 text-[#F5F0E6]/70 leading-relaxed">
-            Trouver une bonne coiffeuse, une esthéticienne de confiance ou un barbier talentueux relevait
+            Trouver une personne de confiance pour la coiffure, l'esthétique ou le barbier relevait
             souvent du parcours du combattant. GlowNyo change la donne : une seule plateforme pour
             découvrir, comparer et réserver les prestataires beauté &amp; bien-être près de chez soi.
           </p>

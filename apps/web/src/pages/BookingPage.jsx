@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { CalendarCheck, MessageCircle, Check, Smartphone, Loader2, ShieldCheck, CreditCard, Landmark, Clock, XCircle, UserPlus, LogIn, CalendarClock, Eye, EyeOff, Mail, AlertTriangle } from 'lucide-react';
+import { CalendarCheck, MessageCircle, Check, Smartphone, Loader2, ShieldCheck, CreditCard, Landmark, Clock, XCircle, UserPlus, LogIn, CalendarClock, Eye, EyeOff, Mail, AlertTriangle, RefreshCw } from 'lucide-react';
 import { SPECIALTIES, waLink, WHATSAPP_NUMBER } from '@/data/site';
 import pb from '@/lib/pocketbaseClient';
 import apiServerClient from '@/lib/apiServerClient';
@@ -28,6 +28,7 @@ const BookingPage = () => {
   const [transactionId, setTransactionId] = useState(null);
   const [verifying, setVerifying] = useState(false);
   const [emailStatus, setEmailStatus] = useState('pending');
+  const [emailSending, setEmailSending] = useState(false);
   const [slotError, setSlotError] = useState('');
   const { isAuthed, user, signup } = useAuth();
   const { providers } = usePublicProviders();
@@ -158,28 +159,34 @@ const BookingPage = () => {
     }
   };
 
-  // Polls the booking status a few times so the confirmation screen can
-  // report whether the confirmation email was actually sent. Stops as soon
-  // as a terminal state (sent/failed) is received.
-  const pollEmailStatus = (id) => {
-    const delays = [900, 1800, 3500, 6000];
-    let cancelled = false;
-    (async () => {
-      for (const delay of delays) {
-        await new Promise(r => setTimeout(r, delay));
-        if (cancelled) return;
-        try {
-          const res = await apiServerClient.fetch(`/bookings/${id}/status`, { method: 'GET' });
-          if (!res.ok) continue;
-          const data = await res.json();
-          setEmailStatus(data.email_status || 'pending');
-          if (data.email_status === 'sent' || data.email_status === 'failed') return;
-        } catch {
-          /* keep polling */
-        }
+  // Sends the Brevo confirmation email (client + provider) via the Express
+  // backend. Called right after the booking is saved, and again when the
+  // visitor clicks "Renvoyer l'email". The route is idempotent: a resend of
+  // an already-sent confirmation is skipped server-side unless `force` is
+  // true, which prevents duplicates. The booking itself is already persisted,
+  // so an email failure never loses the reservation.
+  const sendBookingEmail = async (id, force = false) => {
+    setEmailSending(true);
+    try {
+      const res = await apiServerClient.fetch('/emails/booking-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: id, force })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        setEmailStatus(data.email_status || 'sent');
+      } else {
+        // 503 = Brevo not configured; any other non-ok = send failed. Either
+        // way the booking is saved — we just tell the visitor clearly.
+        setEmailStatus('failed');
       }
-    })();
-    return () => { cancelled = true; };
+    } catch (err) {
+      console.error('booking email send failed', err);
+      setEmailStatus('failed');
+    } finally {
+      setEmailSending(false);
+    }
   };
 
   const buildMessage = () => {
@@ -233,8 +240,9 @@ const BookingPage = () => {
       setPaymentStatus('pending');
       setEmailStatus('pending');
       setSent(true);
-      // Best-effort: report whether the confirmation email was delivered.
-      pollEmailStatus(record.id);
+      // Send the Brevo confirmation email (client + provider) via Express.
+      // Best-effort: a failure here never loses the booking, which is saved.
+      sendBookingEmail(record.id);
     } catch (err) {
       console.error('booking creation failed', err);
       // The DB unique index is the authoritative race guard: if two visitors
@@ -281,6 +289,24 @@ const BookingPage = () => {
 
               <div className="mt-5 mx-auto max-w-md">
                 <EmailStatusBanner status={emailStatus} />
+                {emailStatus !== 'sent' && (
+                  <button
+                    onClick={() => sendBookingEmail(bookingId, true)}
+                    disabled={emailSending || !bookingId}
+                    className="mt-3 w-full inline-flex items-center justify-center gap-2 border border-[#C9922A]/40 text-[#F5F0E6] px-5 py-2.5 rounded-full hover:bg-[#C9922A]/10 transition disabled:opacity-60 text-sm"
+                  >
+                    {emailSending ? (
+                      <><Loader2 size={15} className="animate-spin" /> Envoi de l'email en cours...</>
+                    ) : (
+                      <><RefreshCw size={15} /> Renvoyer l'email de confirmation</>
+                    )}
+                  </button>
+                )}
+                {emailStatus === 'sent' && emailSending && (
+                  <p className="mt-3 text-center text-xs text-[#F5F0E6]/50 inline-flex items-center justify-center gap-1.5">
+                    <Loader2 size={13} className="animate-spin" /> Renvoi en cours…
+                  </p>
+                )}
               </div>
 
               <div className="mt-5 flex justify-center">
@@ -419,7 +445,7 @@ const BookingPage = () => {
                 )}
               </div>
 
-              <button onClick={() => { setSent(false); setBookingId(null); setTransactionId(null); setPaymentStatus('pending'); setEmailStatus('pending'); setSlotError(''); setAccount({ status: 'idle', error: '', password: '' }); }} className="mt-6 text-sm text-[#F5F0E6]/50 hover:text-gold transition">
+              <button onClick={() => { setSent(false); setBookingId(null); setTransactionId(null); setPaymentStatus('pending'); setEmailStatus('pending'); setEmailSending(false); setSlotError(''); setAccount({ status: 'idle', error: '', password: '' }); }} className="mt-6 text-sm text-[#F5F0E6]/50 hover:text-gold transition">
                 Modifier ma demande
               </button>
             </div> : <form onSubmit={onSubmit} className="grid sm:grid-cols-2 gap-5">
@@ -503,7 +529,7 @@ const BookingPage = () => {
             </p>
           </div>
           {chosen && <div className="rounded-3xl border border-[#C9922A]/30 bg-[#C9922A]/5 p-6">
-              <p className="text-xs uppercase tracking-widest text-gold">Prestataire sélectionnée</p>
+              <p className="text-xs uppercase tracking-widest text-gold">Votre prestataire</p>
               <div className="mt-3 flex items-center gap-3">
                 <img src={chosen.image} alt={chosen.name} className="w-14 h-14 rounded-full object-cover border border-[#C9922A]/40" />
                 <div>

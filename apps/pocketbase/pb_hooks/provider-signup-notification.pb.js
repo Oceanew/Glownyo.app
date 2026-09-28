@@ -27,7 +27,7 @@ onRecordAfterCreateSuccess((e) => {
     <div style="font-family: Montserrat, Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0A0A0A; color: #F5F0E6; padding: 32px; border: 1px solid #C9922A33; border-radius: 16px;">
       <h1 style="font-family: 'Playfair Display', Georgia, serif; color: #C9922A; margin: 0 0 8px;">Nouvelle demande de prestataire</h1>
       <p style="color: #F5F0E6; opacity: 0.8;">Statut : <strong>En attente de validation</strong></p>
-      <p style="color: #F5F0E6; opacity: 0.8;">Une nouvelle prestataire souhaite rejoindre GlowNyo. Connectez-vous à l'espace administrateur pour valider ou refuser sa demande.</p>
+      <p style="color: #F5F0E6; opacity: 0.8;">Une nouvelle personne prestataire souhaite rejoindre GlowNyo. Connectez-vous à l'espace administrateur pour valider ou refuser sa demande.</p>
 
       <table cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse; margin: 16px 0; color: #F5F0E6;">
         <tr><td style="color: #C9922A; font-weight: 600;">Nom / Activité</td><td>${name}</td></tr>

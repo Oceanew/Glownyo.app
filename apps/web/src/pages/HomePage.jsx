@@ -38,7 +38,7 @@ const HomePage = () => {
               <br />
               <span className="text-gold-gradient italic">brille de l'extérieur</span>
             </h1>
-            <p className="mt-6 text-lg text-[#F5F0E6]/75 leading-relaxed max-w-xl">La plateforme afro-moderne qui connecte les clients aux meilleures prestataires beauté &amp; bien-être au Bénin et en Afrique. Réservez en quelques clics, payez en Mobile Money.</p>
+            <p className="mt-6 text-lg text-[#F5F0E6]/75 leading-relaxed max-w-xl">La plateforme afro-moderne qui connecte les clients aux prestataires beauté &amp; bien-être de référence au Bénin et en Afrique. Réservez en quelques clics, payez en Mobile Money.</p>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link to="/reservation" className="group gold-gradient text-[#0A0A0A] font-semibold px-8 py-4 rounded-full flex items-center gap-2 hover:brightness-110 transition">
                 Réserver un rendez-vous
@@ -76,7 +76,7 @@ const HomePage = () => {
         }, {
           icon: ShieldCheck,
           title: 'Prestataires vérifiées',
-          desc: 'Chaque professionnelle est sélectionnée pour son savoir-faire et sa fiabilité.'
+          desc: 'Chaque personne prestataire est sélectionnée pour son savoir-faire et sa fiabilité.'
         }].map((f, i) => <motion.div key={f.title} initial="hidden" whileInView="show" viewport={{
           once: true,
           margin: '-80px'
@@ -162,7 +162,7 @@ const HomePage = () => {
                 {[{
                 icon: Rocket,
                 title: 'Visibilité immédiate',
-                desc: 'Votre profil devant des centaines de clientes dès le premier jour.'
+                desc: 'Votre profil devant des centaines de personnes clientes dès le premier jour.'
               }, {
                 icon: TrendingUp,
                 title: 'Zéro commission pendant le lancement',

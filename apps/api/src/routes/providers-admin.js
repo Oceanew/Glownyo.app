@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import pocketbaseClient from '../utils/pocketbaseClient.js';
 import { getAdminUser } from '../utils/adminAuth.js';
+import { sendBrevoEmail, isBrevoConfigured } from '../utils/brevo.js';
 import logger from '../utils/logger.js';
 
 // Strong random password for brand-new standalone provider accounts. The
@@ -157,24 +158,67 @@ export async function validateProvider(req, res) {
 				{ requestKey: `validate-${id}` },
 			);
 			// Trigger the built-in password-reset flow; the activation-email hook
-			// renders the activation message because pending_activation is true.
-			await pocketbaseClient
-				.collection('users')
-				.requestPasswordReset(record.email);
-			return res.json({ ok: true });
+			// forwards the secure token to Express, which sends the activation
+			// email via Brevo (pending_activation is true). The account is already
+			// validated above, so an email failure never blocks activation.
+			let emailSent = true;
+			try {
+				await pocketbaseClient
+					.collection('users')
+					.requestPasswordReset(record.email);
+			} catch (err) {
+				emailSent = false;
+				logger.error('provider activation email failed', 'user', id, 'err', err.message);
+			}
+			return res.json({ ok: true, email_sent: emailSent });
 		}
 
 		// Existing client account — add provider access on the same account.
+		// No password reset: they keep their usual login. We send the Brevo
+		// confirmation email directly here (the PB hook is NOT triggered, so
+		// no duplicate send).
 		await pocketbaseClient.collection('users').update(
 			id,
 			{
 				validated: true,
 				provider_request_status: 'validated',
-				provider_activated_notify: true,
 			},
 			{ requestKey: `validate-${id}` },
 		);
-		return res.json({ ok: true });
+
+		let emailSent = false;
+		if (isBrevoConfigured()) {
+			let appUrl = process.env.WEBSITE_DOMAIN || '';
+			if (appUrl && !/^https?:\/\//i.test(appUrl)) appUrl = `https://${appUrl}`;
+			const loginUrl = appUrl ? `${appUrl.replace(/\/$/, '')}/connexion` : '/connexion';
+			const displayName = record.name || '';
+			const html = `
+				<div style="font-family: Montserrat, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0A0A0A; color: #F5F0E6; padding: 32px; border: 1px solid #C9922A33; border-radius: 16px;">
+					<h1 style="font-family: 'Playfair Display', Georgia, serif; color: #C9922A; margin: 0 0 8px;">Votre accès prestataire GlowNyo est activé 🎉</h1>
+					<p style="color: #F5F0E6; opacity: 0.8;">Bonjour${displayName ? ' ' + displayName : ''},</p>
+					<p style="color: #F5F0E6; opacity: 0.8;">Bonne nouvelle : votre demande a été validée par l'équipe GlowNyo. Votre compte dispose désormais de l'espace prestataire, en plus de votre espace client habituel.</p>
+					<p style="color: #F5F0E6; opacity: 0.8;">Aucune nouvelle connexion à créer : utilisez simplement <strong>votre email et mot de passe habituels</strong> pour vous connecter, puis basculez entre l'espace client et l'espace prestataire depuis votre compte.</p>
+					<p style="margin: 24px 0;">
+						<a href="${loginUrl}" style="display: inline-block; background: linear-gradient(135deg, #E8C877, #C9922A); color: #0A0A0A; font-weight: 700; text-decoration: none; padding: 14px 28px; border-radius: 999px;">Accéder à mon espace</a>
+					</p>
+					<p style="color: #C9922A; font-family: 'Playfair Display', Georgia, serif; font-size: 18px; margin-top: 24px;">Merci de votre confiance — GlowNyo</p>
+					<p style="color: #F5F0E6; opacity: 0.4; font-size: 12px;">Rayonne de l'intérieur, brille de l'extérieur.</p>
+				</div>`;
+			try {
+				await sendBrevoEmail({
+					to: record.email,
+					subject: 'Votre accès prestataire GlowNyo est activé 🎉',
+					html,
+				});
+				emailSent = true;
+			} catch (err) {
+				logger.error('brevo provider activated email failed', 'user', id, 'err', err.message);
+			}
+		} else {
+			logger.error('provider activated email skipped: Brevo not configured', 'user', id);
+		}
+
+		return res.json({ ok: true, email_sent: emailSent });
 	} catch (err) {
 		logger.error('failed to validate provider:', err);
 		throw new Error('failed to validate provider');

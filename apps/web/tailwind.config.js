@@ -26,6 +26,11 @@ module.exports = {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))',
 				},
+				accent: {
+					DEFAULT: 'hsl(var(--accent))',
+					foreground: 'hsl(var(--accent-foreground))',
+				},
+				ring: 'hsl(var(--ring))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -34,5 +39,7 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [],
+	// tailwindcss-animate powers the data-[state=open]:animate-in / animate-out
+	// utilities used by components/ui/dialog.jsx.
+	plugins: [require('tailwindcss-animate')],
 };
