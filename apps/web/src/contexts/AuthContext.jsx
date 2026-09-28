@@ -44,8 +44,8 @@ export function AuthProvider({ children }) {
 
   // Permanently deletes the signed-in account. Bookings are preserved for the
   // GlowNyo team because the `owner` relation on `bookings` has
-  // `cascadeDelete: false` — the records remain accessible to admin/superuser
-  // via the Express bookings-list route, just no longer linked to a client.
+  // `cascadeDelete: false` — the records remain accessible to admins via the
+  // `/bookings` route, just no longer linked to a client.
   const deleteAccount = async () => {
     const id = pb.authStore.record?.id;
     if (!id) return;
