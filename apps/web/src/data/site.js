@@ -46,7 +46,11 @@ export const PROVIDERS = [
     startingPrice: "15 000 FCFA",
     rating: 5.0,
     reviews: 9,
-    image: "https://images.hostinger.com/4ae8998b-75e0-40a2-afcf-c7be223bd128.png",
+    image: "/images/providers/queens-beauty-by-laure.jpg",
+    imageWebp: "/images/providers/queens-beauty-by-laure.webp",
+    // Her photo is a circular brand logo, not a portrait — shown as a round
+    // avatar instead of the usual full-bleed rectangular photo.
+    avatarShape: "circle",
     bio: "Fondatrice de Queen's Beauty by Laure, Laure sublime les cheveux naturels avec des locks impeccables et des tresses protectrices, avec un an d'expérience passionnée sur le terrain à Akpakpa.",
     services: [
       { name: "Pose de locks", price: "20 000 FCFA", duration: "3h" },
@@ -54,7 +58,7 @@ export const PROVIDERS = [
       { name: "Entretien locks", price: "10 000 FCFA", duration: "1h30" },
     ],
     gallery: [
-      "https://images.hostinger.com/4ae8998b-75e0-40a2-afcf-c7be223bd128.png",
+      "/images/providers/queens-beauty-by-laure.jpg",
     ],
   },
   {

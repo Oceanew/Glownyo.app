@@ -110,13 +110,30 @@ const HomePage = () => {
           delay: i % 3 * 0.08
         }}>
               <Link to={`/prestataires/${p.slug}`} className="group block rounded-2xl overflow-hidden border border-[#C9922A]/15 bg-[#0F0F0F] hover:border-[#C9922A]/45 transition">
-                <div className="relative aspect-[4/5] overflow-hidden">
-                  <img src={p.image} alt={p.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
-                  <span className="absolute top-4 left-4 rounded-full bg-[#0A0A0A]/80 backdrop-blur px-3 py-1 text-xs text-gold border border-[#C9922A]/30">
-                    {p.specialty}
-                  </span>
-                </div>
+                {p.avatarShape === 'circle' ? (
+                  <div className="relative aspect-[4/5] overflow-hidden flex items-center justify-center bg-[#0A0A0A]">
+                    <picture>
+                      {p.imageWebp && <source srcSet={p.imageWebp} type="image/webp" />}
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        loading="lazy"
+                        className="h-36 w-36 sm:h-44 sm:w-44 rounded-full object-cover ring-4 ring-[#C9922A]/25 group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </picture>
+                    <span className="absolute top-4 left-4 rounded-full bg-[#0A0A0A]/80 backdrop-blur px-3 py-1 text-xs text-gold border border-[#C9922A]/30">
+                      {p.specialty}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="relative aspect-[4/5] overflow-hidden">
+                    <img src={p.image} alt={p.name} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent" />
+                    <span className="absolute top-4 left-4 rounded-full bg-[#0A0A0A]/80 backdrop-blur px-3 py-1 text-xs text-gold border border-[#C9922A]/30">
+                      {p.specialty}
+                    </span>
+                  </div>
+                )}
                 <div className="p-5">
                   <div className="flex items-center justify-between gap-2">
                     <h3 className="font-display text-xl font-semibold">{p.name}</h3>
