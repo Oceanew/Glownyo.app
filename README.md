@@ -43,12 +43,12 @@ pour votre plateforme (`apps/pocketbase/scripts/download-pocketbase.js`).
 
 ## Configurer les emails (Brevo)
 
-Sans SMTP configuré, PocketBase ne peut envoyer aucun email : ni la confirmation de
+Sans Brevo configuré, PocketBase ne peut envoyer aucun email : ni la confirmation de
 réservation au client, ni la notification à la prestataire, ni l'alerte à l'équipe
-GlowNyo à l'inscription d'une prestataire, ni l'email d'activation. La migration
-`apps/pocketbase/pb_migrations/1789403173_configure_smtp.js` configure PocketBase pour
-envoyer via le relais SMTP de [Brevo](https://www.brevo.com) — il suffit de lui fournir
-les identifiants ci-dessous.
+GlowNyo à l'inscription d'une prestataire, ni l'email d'activation. Le hook
+`apps/pocketbase/pb_hooks/brevo-mailer.pb.js` envoie tous les emails sortants via
+l'[API transactionnelle de Brevo](https://www.brevo.com) — il suffit de lui fournir une
+clé API. (Une clé SMTP fonctionne aussi comme alternative, voir l'encart à l'étape 3.)
 
 **Sur Brevo :**
 
@@ -73,34 +73,40 @@ les identifiants ci-dessous.
    > "freemail" que vous ne contrôlez pas), d'où l'avertissement de conformité et un
    > risque de spam plus élevé. Utile pour tester vite, mais basculez sur `glownyo.app`
    > dès que possible.
-3. **Récupérez vos identifiants SMTP.** Cliquez sur votre nom (en haut à droite) →
-   **SMTP & API** → onglet **SMTP**. Vous y trouvez :
-   - le **login SMTP** (généralement votre adresse email de compte Brevo),
-   - une clé SMTP existante, ou un bouton **Générer une nouvelle clé SMTP** — copiez-la
-     immédiatement, elle ne sera plus jamais affichée en entier.
+3. **Récupérez votre clé API.** Cliquez sur votre nom (en haut à droite) → **SMTP & API**
+   → onglet **Clés API** → **Générer une nouvelle clé API** (ou copiez une clé
+   existante, préfixée `xkeysib-...`) — copiez-la immédiatement, elle ne sera plus jamais
+   affichée en entier.
+
+   > Une **clé API** (`xkeysib-...`, onglet **Clés API**) et une **clé SMTP** (onglet
+   > **SMTP**) sont deux identifiants différents chez Brevo. Le hook
+   > `brevo-mailer.pb.js` n'utilise que la clé API. Si `BREVO_API_KEY` n'est pas
+   > définie, PocketBase se rabat automatiquement sur le relais SMTP configuré par
+   > `pb_migrations/1789403173_configure_smtp.js` (qui, lui, a besoin de la clé SMTP) —
+   > les deux chemins ne sont donc pas exclusifs, la clé API est juste le plus simple des
+   > deux à mettre en place.
 
 **Dans le projet :**
 
 4. Copiez `apps/pocketbase/.env.example` en `apps/pocketbase/.env` et renseignez :
    ```
-   BREVO_SMTP_LOGIN=<le login SMTP copié à l'étape 3>
-   BREVO_SMTP_KEY=<la clé SMTP copiée à l'étape 3>
+   BREVO_API_KEY=<la clé API copiée à l'étape 3>
    EMAIL_SENDER_ADDRESS=<l'adresse validée à l'étape 2>
    EMAIL_SENDER_NAME=GlowNyo
    ```
 5. Lancez (ou relancez) PocketBase — `npm run dev --prefix apps/pocketbase` en local.
-   La migration s'applique automatiquement au démarrage et active le SMTP. Si l'une des
-   trois variables manque, elle laisse le SMTP désactivé (pas d'envoi à moitié configuré)
-   et l'affiche dans les logs de PocketBase.
-6. **En production**, définissez ces mêmes variables (`BREVO_SMTP_LOGIN`,
-   `BREVO_SMTP_KEY`, `EMAIL_SENDER_ADDRESS`, `EMAIL_SENDER_NAME`) dans les variables
-   d'environnement de votre hébergeur pour le processus PocketBase — jamais dans un
-   fichier committé.
+   Dès que `BREVO_API_KEY` et `EMAIL_SENDER_ADDRESS` sont présents, tous les emails
+   sortants passent par l'API Brevo.
+6. **En production**, définissez ces mêmes variables (`BREVO_API_KEY`,
+   `EMAIL_SENDER_ADDRESS`, `EMAIL_SENDER_NAME`) dans les variables d'environnement de
+   votre hébergeur pour le processus PocketBase — jamais dans un fichier committé. Une
+   clé API qui a circulé ailleurs (chat, email, capture d'écran...) doit être régénérée
+   sur Brevo avant la mise en production.
 7. **Testez.** Faites une réservation de bout en bout sur `/reservation` avec une
    adresse email que vous consultez : vous devez recevoir l'email de confirmation, et la
    prestataire choisie doit recevoir la notification. En cas d'échec, l'onglet **Logs**
    de l'admin PocketBase (`/_/`) affiche la raison exacte renvoyée par Brevo (expéditeur
-   non vérifié, identifiants invalides, etc.).
+   non vérifié, clé invalide, etc.).
 
 ## Scripts
 
