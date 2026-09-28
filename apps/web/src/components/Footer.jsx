@@ -51,9 +51,12 @@ const Footer = () => {
         </div>
       </div>
       <div className="border-t border-white/5">
-        <div className="mx-auto max-w-[90rem] px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-[#F5F0E6]/40">
+        <div className="mx-auto max-w-[90rem] px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#F5F0E6]/40">
           <p>© {new Date().getFullYear()} GlowNyo — glownyo.app. Tous droits réservés.</p>
-          <p>Paiement Mobile Money via FedaPay · Réservation directe sur GlowNyo</p>
+          <div className="flex items-center gap-4">
+            <Link to="/cgv" className="hover:text-gold transition">Conditions générales de vente</Link>
+            <p>Paiement Mobile Money via FedaPay · Réservation directe sur GlowNyo</p>
+          </div>
         </div>
       </div>
     </footer>;
