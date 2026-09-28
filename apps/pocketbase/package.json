@@ -7,8 +7,8 @@
 		"postinstall": "node scripts/download-pocketbase.js",
 		"dev": "sh -c 'set -a; [ -f .env ] && . ./.env; set +a; exec ./pocketbase serve --http=0.0.0.0:8090 --encryptionEnv=PB_ENCRYPTION_KEY --hooksWatch=false'",
 		"start": "sh -c 'set -a; [ -f .env ] && . ./.env; set +a; exec ./pocketbase serve --http=0.0.0.0:8090 --encryptionEnv=PB_ENCRYPTION_KEY --dir=/data --migrationsDir=./pb_migrations --hooksDir=./pb_hooks --hooksWatch=false'",
-		"migrations:up": "sh -c 'set -a; [ -f .env ] && . ./.env; set +a; exec ./pocketbase horizons migrations:up --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_migrations --hooksDir=./pb_hooks --hooksWatch=false'",
-		"migrations:revert": "sh -c 'set -a; [ -f .env ] && . ./.env; set +a; exec ./pocketbase horizons migrations:revert --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_migrations --hooksDir=./pb_hooks --hooksWatch=false'",
+		"migrations:up": "sh -c 'set -a; [ -f .env ] && . ./.env; set +a; exec ./pocketbase horizons migrations:up --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_migrations --hooksDir=./pb_hooks_cli --hooksWatch=false'",
+		"migrations:revert": "sh -c 'set -a; [ -f .env ] && . ./.env; set +a; exec ./pocketbase horizons migrations:revert --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_migrations --hooksDir=./pb_hooks_cli --hooksWatch=false'",
 		"migrations:snapshot": "mkdir -p ./pb_snapshots && echo 'y' | ./pocketbase migrate collections --encryptionEnv=PB_ENCRYPTION_KEY --dir=./pb_data --migrationsDir=./pb_snapshots",
 		"update": "./pocketbase update --encryptionEnv=PB_ENCRYPTION_KEY --backup=0"
 	}

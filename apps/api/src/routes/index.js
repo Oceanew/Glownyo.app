@@ -15,7 +15,6 @@ import {
 import { listPublicProviders } from './providers-public.js';
 import { listActive, toggleActive } from './providers-active.js';
 import emailsBooking from './emails-booking.js';
-import emailsProviderActivation from './emails-provider-activation.js';
 import adminBrevoStatus from './admin-brevo-status.js';
 import reviewsCreate from './reviews-create.js';
 import reviewsEligible from './reviews-eligible.js';
@@ -57,7 +56,6 @@ export default () => {
 
     // Brevo transactional emails (server-side only; key stays in Express env).
     router.post('/emails/booking-confirmation', emailsBooking);
-    router.post('/emails/provider-activation', emailsProviderActivation);
 
     return router;
 };
