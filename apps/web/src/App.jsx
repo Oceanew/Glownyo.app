@@ -19,6 +19,7 @@ import MesRendezVousPage from './pages/MesRendezVousPage';
 import AccountPage from './pages/AccountPage';
 import ProviderSpacePage from './pages/ProviderSpacePage';
 import TermsPage from './pages/TermsPage';
+import FAQPage from './pages/FAQPage';
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                         <Route path="/prestataires/:slug" element={<ProviderDetailPage />} />
                         <Route path="/reservation" element={<BookingPage />} />
                         <Route path="/a-propos" element={<AboutPage />} />
+                        <Route path="/faq" element={<FAQPage />} />
                         <Route path="/partenaires" element={<PartnersPage />} />
                         <Route path="/admin/reservations" element={<AdminRoute><AdminBookingsPage /></AdminRoute>} />
                         <Route path="/admin/prestataires" element={<AdminRoute><AdminProvidersPage /></AdminRoute>} />

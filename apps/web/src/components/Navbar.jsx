@@ -11,6 +11,7 @@ const links = [
   { to: '/reservation', label: 'Réservation' },
   { to: '/partenaires', label: 'Partenaires' },
   { to: '/a-propos', label: 'À propos' },
+  { to: '/faq', label: 'FAQ' },
   { to: '/contact', label: 'Contact' },
 ];
 
