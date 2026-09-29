@@ -1,15 +1,18 @@
+import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Star, MapPin, MessageCircle, CalendarCheck, ArrowLeft, Clock, Instagram, CalendarClock, Tag } from 'lucide-react';
 import { waLinkTo } from '@/data/site';
 import { usePublicProviders } from '@/lib/usePublicProviders';
 import { Helmet } from 'react-helmet';
 import ProviderReviews from '@/components/ProviderReviews';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 
 const ProviderDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const { providers } = usePublicProviders();
   const p = providers.find((x) => x.slug === slug);
+  const [lightbox, setLightbox] = useState(null);
 
   if (!p) {
     return (
@@ -37,12 +40,28 @@ const ProviderDetailPage = () => {
         <div className="grid lg:grid-cols-[minmax(0,420px)_1fr] gap-10 lg:gap-14">
           {/* LEFT: photo + actions */}
           <div>
-            <div className="relative rounded-3xl overflow-hidden border border-[#C9922A]/20">
-              <img src={p.image} alt={p.name} className="w-full aspect-[4/5] object-cover" />
-              <span className="absolute top-4 left-4 rounded-full bg-[#0A0A0A]/80 backdrop-blur px-3 py-1 text-xs text-gold border border-[#C9922A]/30">
-                {p.specialty}
-              </span>
-            </div>
+            {p.avatarShape === 'circle' ? (
+              <div className="relative rounded-3xl overflow-hidden border border-[#C9922A]/20 aspect-[4/5] flex items-center justify-center bg-[#0F0F0F]">
+                <picture>
+                  {p.imageWebp && <source srcSet={p.imageWebp} type="image/webp" />}
+                  <img
+                    src={p.image}
+                    alt={p.name}
+                    className="h-56 w-56 sm:h-64 sm:w-64 rounded-full object-cover ring-4 ring-[#C9922A]/25"
+                  />
+                </picture>
+                <span className="absolute top-4 left-4 rounded-full bg-[#0A0A0A]/80 backdrop-blur px-3 py-1 text-xs text-gold border border-[#C9922A]/30">
+                  {p.specialty}
+                </span>
+              </div>
+            ) : (
+              <div className="relative rounded-3xl overflow-hidden border border-[#C9922A]/20">
+                <img src={p.image} alt={p.name} className="w-full aspect-[4/5] object-cover" />
+                <span className="absolute top-4 left-4 rounded-full bg-[#0A0A0A]/80 backdrop-blur px-3 py-1 text-xs text-gold border border-[#C9922A]/30">
+                  {p.specialty}
+                </span>
+              </div>
+            )}
 
             <div className="mt-5 flex flex-col gap-3">
               <Link
@@ -127,9 +146,14 @@ const ProviderDetailPage = () => {
             <h2 className="mt-12 font-display text-2xl font-semibold">Réalisations</h2>
             <div className="mt-5 grid grid-cols-2 gap-4">
               {p.gallery.map((g, i) => (
-                <div key={i} className="rounded-2xl overflow-hidden border border-[#C9922A]/15 aspect-square">
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setLightbox(g)}
+                  className="rounded-2xl overflow-hidden border border-[#C9922A]/15 aspect-square cursor-zoom-in"
+                >
                   <img src={g} alt={`Réalisation ${i + 1} de ${p.name}`} className="h-full w-full object-cover hover:scale-105 transition-transform duration-700" />
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -138,6 +162,16 @@ const ProviderDetailPage = () => {
         {/* Avis clients — note moyenne, nombre d'avis, liste paginée et formulaire */}
         <ProviderReviews providerName={p.name} />
       </div>
+
+      <Dialog open={!!lightbox} onOpenChange={(open) => !open && setLightbox(null)}>
+        <DialogContent className="max-w-3xl bg-transparent border-none shadow-none p-0">
+          <DialogTitle className="sr-only">Réalisation de {p.name}</DialogTitle>
+          <DialogDescription className="sr-only">Photo agrandie de la galerie de {p.name}</DialogDescription>
+          {lightbox && (
+            <img src={lightbox} alt={`Réalisation agrandie de ${p.name}`} className="w-full max-h-[85vh] object-contain rounded-2xl" />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
