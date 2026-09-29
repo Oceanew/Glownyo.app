@@ -1,7 +1,13 @@
 /// <reference path="../pb_data/types.d.ts" />
-/* 
+/*
     - Usage: ./pocketbase horizons migrations:revert migration1.js migration2.js ... - reverts specific migrations by name (not by count like the built-in "down" command)
     - Usage: ./pocketbase horizons migrations:up - runs migrations up and exits with code 1 if any migration fails
+
+    Lives in pb_hooks_cli/ (loaded only by the migrations:up/migrations:revert
+    npm scripts via a dedicated --hooksDir), not pb_hooks/: it shells out and
+    touches the filesystem directly, which managed PocketBase hosts reject as
+    unsafe for a tenant hook, so it must never ship in the pb_hooks/ folder
+    that gets deployed there.
 */
 
 // Create a new "horizons" command group with "migrations:revert" and "migrations:up" subcommands

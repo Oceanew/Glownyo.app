@@ -12,7 +12,10 @@ onRecordAfterCreateSuccess((e) => {
   }
 
   try {
-    const safeEmail = String(userEmail).replace(/"/g, "");
+    // No regex literal here on purpose: PocketBase Cloud's hook validator
+    // rejects `/"/g`-style patterns with a false "invalid regular
+    // expression" error, even though it's valid JS.
+    const safeEmail = String(userEmail).split('"').join("");
     const existing = $app.findRecordsByFilter(
       "bookings",
       `email = "${safeEmail}"`,
