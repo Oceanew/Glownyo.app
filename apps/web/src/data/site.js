@@ -60,6 +60,7 @@ export const PROVIDERS = [
     gallery: [
       "/images/providers/queens-beauty-by-laure.jpg",
       "/images/providers/queens-beauty-by-laure-2.jpg",
+      { type: "video", src: "/videos/providers/queens-beauty-by-laure-1.mp4" },
     ],
   },
   {

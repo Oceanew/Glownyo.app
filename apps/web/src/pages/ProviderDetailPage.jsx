@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, MapPin, MessageCircle, CalendarCheck, ArrowLeft, Clock, Instagram, CalendarClock, Tag } from 'lucide-react';
+import { Star, MapPin, MessageCircle, CalendarCheck, ArrowLeft, Clock, Instagram, CalendarClock, Tag, Play } from 'lucide-react';
 import { waLinkTo } from '@/data/site';
 import { usePublicProviders } from '@/lib/usePublicProviders';
 import { Helmet } from 'react-helmet';
@@ -145,16 +145,34 @@ const ProviderDetailPage = () => {
             {/* Réalisations */}
             <h2 className="mt-12 font-display text-2xl font-semibold">Réalisations</h2>
             <div className="mt-5 grid grid-cols-2 gap-4">
-              {p.gallery.map((g, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setLightbox(g)}
-                  className="rounded-2xl overflow-hidden border border-[#C9922A]/15 aspect-square cursor-zoom-in"
-                >
-                  <img src={g} alt={`Réalisation ${i + 1} de ${p.name}`} className="h-full w-full object-cover hover:scale-105 transition-transform duration-700" />
-                </button>
-              ))}
+              {p.gallery.map((g, i) => {
+                const isVideo = typeof g === 'object' && g.type === 'video';
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setLightbox(g)}
+                    className="relative rounded-2xl overflow-hidden border border-[#C9922A]/15 aspect-square cursor-zoom-in"
+                  >
+                    {isVideo ? (
+                      <>
+                        <video
+                          src={g.src}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="h-full w-full object-cover hover:scale-105 transition-transform duration-700"
+                        />
+                        <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+                          <Play size={36} className="text-white drop-shadow" fill="currentColor" />
+                        </span>
+                      </>
+                    ) : (
+                      <img src={g} alt={`Réalisation ${i + 1} de ${p.name}`} className="h-full w-full object-cover hover:scale-105 transition-transform duration-700" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -166,10 +184,17 @@ const ProviderDetailPage = () => {
       <Dialog open={!!lightbox} onOpenChange={(open) => !open && setLightbox(null)}>
         <DialogContent className="max-w-3xl bg-transparent border-none shadow-none p-0">
           <DialogTitle className="sr-only">Réalisation de {p.name}</DialogTitle>
-          <DialogDescription className="sr-only">Photo agrandie de la galerie de {p.name}</DialogDescription>
-          {lightbox && (
+          <DialogDescription className="sr-only">Photo ou vidéo agrandie de la galerie de {p.name}</DialogDescription>
+          {lightbox && (typeof lightbox === 'object' && lightbox.type === 'video' ? (
+            <video
+              src={lightbox.src}
+              controls
+              playsInline
+              className="w-full max-h-[85vh] rounded-2xl"
+            />
+          ) : (
             <img src={lightbox} alt={`Réalisation agrandie de ${p.name}`} className="w-full max-h-[85vh] object-contain rounded-2xl" />
-          )}
+          ))}
         </DialogContent>
       </Dialog>
     </div>
