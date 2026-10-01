@@ -4,7 +4,7 @@ export const WHATSAPP_NUMBER = "33743626818"; // WhatsApp Business — équipe G
 export const TEAM_WHATSAPP = "33743626818"; // Contact équipe GlowNyo pour prestataires & partenaires
 export const EMAIL = "glownyoapp@gmail.com";
 export const TEAM_EMAIL = "glownyoapp@gmail.com";
-export const CALENDLY_URL = "https://calendly.com/glownyoapp/30min";
+export const CALENDLY_URL = "https://calendly.com/glownyoapp/45";
 
 export const waLink = (message) =>
   `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message || "Bonjour, j'ai une question concernant une réservation Glownyo.")}`;
