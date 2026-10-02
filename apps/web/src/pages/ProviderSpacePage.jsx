@@ -18,11 +18,13 @@ import pb from '@/lib/pocketbaseClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { PaymentStatusBadge } from './BookingPage';
 import SpaceSwitcher from '@/components/SpaceSwitcher';
+import ProviderProfileEditor from '@/components/ProviderProfileEditor';
 import { waLink } from '@/data/site';
 
 const ProviderSpacePage = () => {
   const { user, isProvider, isDualRole } = useAuth();
   const navigate = useNavigate();
+  const [tab, setTab] = useState('bookings');
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -100,7 +102,7 @@ const ProviderSpacePage = () => {
         </div>
       </div>
 
-      {/* Provider profile */}
+      {/* Compact identity header */}
       <div className="mt-8 rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6 sm:p-8">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-full gold-gradient flex items-center justify-center shrink-0">
@@ -128,22 +130,6 @@ const ProviderSpacePage = () => {
           ))}
         </div>
 
-        {user?.services && (
-          <div className="mt-5">
-            <p className="text-gold font-medium text-sm">Services proposés</p>
-            <p className="mt-1 text-sm text-[#F5F0E6]/75 whitespace-pre-wrap">
-              {user.services}
-            </p>
-          </div>
-        )}
-        {user?.bio && (
-          <div className="mt-4">
-            <p className="text-gold font-medium text-sm">Présentation</p>
-            <p className="mt-1 text-sm text-[#F5F0E6]/75 whitespace-pre-wrap">
-              {user.bio}
-            </p>
-          </div>
-        )}
         {user?.instagram && (
           <a
             href={user.instagram}
@@ -156,99 +142,131 @@ const ProviderSpacePage = () => {
         )}
       </div>
 
-      {/* Assigned bookings */}
-      <div className="mt-8">
-        <h2 className="font-display text-2xl font-semibold">
-          Réservations reçues
-        </h2>
-
-        {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
-
-        {loading ? (
-          <div className="mt-10 flex items-center justify-center text-[#F5F0E6]/50">
-            <Loader2 size={22} className="animate-spin text-gold" />
-          </div>
-        ) : bookings.length === 0 ? (
-          <div className="mt-8 rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-10 text-center">
-            <div className="mx-auto w-14 h-14 rounded-full gold-gradient flex items-center justify-center">
-              <CalendarClock size={24} className="text-[#0A0A0A]" />
-            </div>
-            <h3 className="mt-5 font-display text-xl font-semibold">
-              Aucune réservation pour l'instant
-            </h3>
-            <p className="mt-2 text-sm text-[#F5F0E6]/60 max-w-sm mx-auto">
-              Dès qu'une personne cliente réservera une prestation chez vous, la demande
-              apparaîtra ici.
-            </p>
-          </div>
-        ) : (
-          <div className="mt-6 grid sm:grid-cols-2 gap-5">
-            {bookings.map((b) => (
-              <div
-                key={b.id}
-                className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6 flex flex-col"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-display text-lg font-semibold">
-                      {b.service || 'Prestation'}
-                    </p>
-                    <p className="text-sm text-[#F5F0E6]/60 flex items-center gap-1.5">
-                      <UserCircle size={13} className="text-gold" />
-                      {b.name || 'Cliente'}
-                    </p>
-                  </div>
-                  <PaymentStatusBadge status={b.payment_status || 'pending'} />
-                </div>
-
-                <div className="mt-4 flex flex-col gap-2 text-sm text-[#F5F0E6]/75">
-                  <p className="flex items-center gap-2">
-                    <CalendarClock size={14} className="text-gold" />
-                    {b.date || 'Date à confirmer'} {b.time ? `— ${b.time}` : ''}
-                  </p>
-                  <p className="flex items-center gap-2">
-                    <Clock size={14} className="text-gold" />
-                    Demandé le {new Date(b.created).toLocaleDateString('fr-FR')}
-                  </p>
-                  {b.phone && (
-                    <p className="flex items-center gap-2">
-                      <Phone size={14} className="text-gold" />
-                      {b.phone}
-                    </p>
-                  )}
-                  {b.message && (
-                    <p className="text-[#F5F0E6]/55 italic">« {b.message} »</p>
-                  )}
-                </div>
-
-                <div className="mt-5 flex items-center gap-2 pt-4 border-t border-[#C9922A]/10">
-                  {b.phone && (
-                    <a
-                      href={waLink(
-                        `Bonjour ${b.name || ''}, c'est ${user?.name || 'votre prestataire'} GlowNyo concernant votre réservation (${b.service || 'prestation'} du ${b.date || '—'}).`
-                      )}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 text-sm text-[#25D366] hover:brightness-110 transition"
-                    >
-                      <MessageCircle size={15} /> WhatsApp
-                    </a>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="mt-10">
-        <Link
-          to="/reservation"
-          className="inline-flex items-center gap-2 gold-gradient text-[#0A0A0A] font-semibold px-6 py-3 rounded-full hover:brightness-110 transition"
+      {/* Tabs */}
+      <div className="mt-8 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setTab('bookings')}
+          className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
+            tab === 'bookings'
+              ? 'gold-gradient text-[#0A0A0A]'
+              : 'border border-[#C9922A]/25 text-[#F5F0E6]/70 hover:bg-[#C9922A]/10'
+          }`}
         >
-          <CalendarCheck size={17} /> Réserver une prestation
-        </Link>
+          Réservations
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab('profile')}
+          className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
+            tab === 'profile'
+              ? 'gold-gradient text-[#0A0A0A]'
+              : 'border border-[#C9922A]/25 text-[#F5F0E6]/70 hover:bg-[#C9922A]/10'
+          }`}
+        >
+          Mon profil
+        </button>
       </div>
+
+      {tab === 'profile' ? (
+        <ProviderProfileEditor />
+      ) : (
+        <>
+          {/* Assigned bookings */}
+          <div className="mt-8">
+            <h2 className="font-display text-2xl font-semibold">
+              Réservations reçues
+            </h2>
+
+            {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+
+            {loading ? (
+              <div className="mt-10 flex items-center justify-center text-[#F5F0E6]/50">
+                <Loader2 size={22} className="animate-spin text-gold" />
+              </div>
+            ) : bookings.length === 0 ? (
+              <div className="mt-8 rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-10 text-center">
+                <div className="mx-auto w-14 h-14 rounded-full gold-gradient flex items-center justify-center">
+                  <CalendarClock size={24} className="text-[#0A0A0A]" />
+                </div>
+                <h3 className="mt-5 font-display text-xl font-semibold">
+                  Aucune réservation pour l'instant
+                </h3>
+                <p className="mt-2 text-sm text-[#F5F0E6]/60 max-w-sm mx-auto">
+                  Dès qu'une personne cliente réservera une prestation chez vous, la demande
+                  apparaîtra ici.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-6 grid sm:grid-cols-2 gap-5">
+                {bookings.map((b) => (
+                  <div
+                    key={b.id}
+                    className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6 flex flex-col"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-display text-lg font-semibold">
+                          {b.service || 'Prestation'}
+                        </p>
+                        <p className="text-sm text-[#F5F0E6]/60 flex items-center gap-1.5">
+                          <UserCircle size={13} className="text-gold" />
+                          {b.name || 'Cliente'}
+                        </p>
+                      </div>
+                      <PaymentStatusBadge status={b.payment_status || 'pending'} />
+                    </div>
+
+                    <div className="mt-4 flex flex-col gap-2 text-sm text-[#F5F0E6]/75">
+                      <p className="flex items-center gap-2">
+                        <CalendarClock size={14} className="text-gold" />
+                        {b.date || 'Date à confirmer'} {b.time ? `— ${b.time}` : ''}
+                      </p>
+                      <p className="flex items-center gap-2">
+                        <Clock size={14} className="text-gold" />
+                        Demandé le {new Date(b.created).toLocaleDateString('fr-FR')}
+                      </p>
+                      {b.phone && (
+                        <p className="flex items-center gap-2">
+                          <Phone size={14} className="text-gold" />
+                          {b.phone}
+                        </p>
+                      )}
+                      {b.message && (
+                        <p className="text-[#F5F0E6]/55 italic">« {b.message} »</p>
+                      )}
+                    </div>
+
+                    <div className="mt-5 flex items-center gap-2 pt-4 border-t border-[#C9922A]/10">
+                      {b.phone && (
+                        <a
+                          href={waLink(
+                            `Bonjour ${b.name || ''}, c'est ${user?.name || 'votre prestataire'} GlowNyo concernant votre réservation (${b.service || 'prestation'} du ${b.date || '—'}).`
+                          )}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 text-sm text-[#25D366] hover:brightness-110 transition"
+                        >
+                          <MessageCircle size={15} /> WhatsApp
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-10">
+            <Link
+              to="/reservation"
+              className="inline-flex items-center gap-2 gold-gradient text-[#0A0A0A] font-semibold px-6 py-3 rounded-full hover:brightness-110 transition"
+            >
+              <CalendarCheck size={17} /> Réserver une prestation
+            </Link>
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -20,7 +20,10 @@ onRecordAfterUpdateSuccess((e) => {
     const email = record.get("email") || "—";
     const phone = record.get("phone") || "—";
     const specialty = record.get("specialty") || "—";
-    const services = record.get("services") || "—";
+    const rawServices = record.get("services");
+    const services = Array.isArray(rawServices)
+      ? rawServices.map((s) => (s && s.name) || "").filter(Boolean).join(", ") || "—"
+      : rawServices || "—";
     const location = record.get("location") || "—";
     const instagram = record.get("instagram") || "—";
     const bio = record.get("bio") || "—";
