@@ -19,15 +19,27 @@ routerAdd("GET", "/providers/public", (e) => {
 
     const providers = records.map((r) => ({
       id: r.id,
+      slug: r.get("slug") || "",
       name: r.get("name") || "",
       specialty: r.get("specialty") || "",
-      services: r.get("services") || "",
+      tagline: r.get("tagline") || "",
+      services: r.get("services") || [],
       location: r.get("location") || "",
       phone: r.get("phone") || "",
+      whatsapp_secondary: r.get("whatsapp_secondary") || "",
       email: r.get("email") || "",
       instagram: r.get("instagram") || "",
+      experience: r.get("experience") || "",
+      availability: r.get("availability") || "",
+      starting_price_override: r.get("starting_price_override") || "",
+      rating: r.get("rating") || 0,
+      review_count: r.get("review_count") || 0,
       bio: r.get("bio") || "",
       avatar: r.get("avatar") || "",
+      avatar_url: r.get("avatar_url") || "",
+      avatar_shape: r.get("avatar_shape") || "",
+      gallery: r.get("gallery") || [],
+      gallery_urls: r.get("gallery_urls") || [],
       source: "db",
     }));
 

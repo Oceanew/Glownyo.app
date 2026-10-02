@@ -18,7 +18,10 @@ onRecordAfterCreateSuccess((e) => {
   const email = e.record.get("email") || "—";
   const phone = e.record.get("phone") || "—";
   const specialty = e.record.get("specialty") || "—";
-  const services = e.record.get("services") || "—";
+  const rawServices = e.record.get("services");
+  const services = Array.isArray(rawServices)
+    ? rawServices.map((s) => (s && s.name) || "").filter(Boolean).join(", ") || "—"
+    : rawServices || "—";
   const location = e.record.get("location") || "—";
   const instagram = e.record.get("instagram") || "—";
   const bio = e.record.get("bio") || "—";
