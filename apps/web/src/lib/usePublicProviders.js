@@ -81,6 +81,46 @@ const mapDbProvider = (p) => {
   };
 };
 
+// Reviews are public to read (collection listRule: hidden = false) and each
+// one stores the provider's exact display name (copied from the booking at
+// creation time — see api-reviews.pb.js), so a single query lets us compute
+// every provider's real average/count by name, client-side, in one pass.
+const fetchRatingsByProviderName = async () => {
+  try {
+    const reviews = await pb.collection('reviews').getFullList({ fields: 'provider,rating' });
+    const totals = {};
+    for (const r of reviews) {
+      if (!r.provider) continue;
+      const bucket = (totals[r.provider] ||= { sum: 0, count: 0 });
+      bucket.sum += Number(r.rating) || 0;
+      bucket.count += 1;
+    }
+    const byName = {};
+    for (const [name, { sum, count }] of Object.entries(totals)) {
+      byName[name] = { average: sum / count, count };
+    }
+    return byName;
+  } catch (err) {
+    console.error('failed to load review ratings', err);
+    return {};
+  }
+};
+
+// A provider's displayed rating/review count defaults to whatever was seeded
+// (a historic marketing number for the hardcoded PROVIDERS, or 0 for a fresh
+// DB signup) until real Glownyo reviews exist for them — at which point the
+// genuine average/count takes over everywhere (listing cards, homepage,
+// detail page header), so the badge can never show a stale number once a
+// provider has actual reviews.
+const applyRealRatings = (list, ratingsByName) =>
+  list.map((p) => {
+    const real = ratingsByName[p.name];
+    if (real && real.count > 0) {
+      return { ...p, rating: real.average, reviews: real.count };
+    }
+    return p;
+  });
+
 // Returns the merged list of public providers: the seeded static providers
 // plus every provider validated by the GlowNyo team (fetched from the
 // Express `/providers/public` route). DB providers are appended after the
@@ -93,7 +133,10 @@ export function usePublicProviders() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await apiServerClient.fetch('/providers/public');
+        const [res, ratingsByName] = await Promise.all([
+          apiServerClient.fetch('/providers/public'),
+          fetchRatingsByProviderName(),
+        ]);
         if (!res.ok) throw new Error('load_failed');
         const data = await res.json();
         if (cancelled) return;
@@ -102,7 +145,7 @@ export function usePublicProviders() {
         // static one (shouldn't happen, but be safe).
         const staticSlugs = new Set(PROVIDERS.map((p) => p.slug));
         const extra = dbProviders.filter((p) => !staticSlugs.has(p.slug));
-        setProviders([...PROVIDERS, ...extra]);
+        setProviders(applyRealRatings([...PROVIDERS, ...extra], ratingsByName));
       } catch (err) {
         // Fail gracefully — the static providers still render.
         console.error('failed to load public providers', err);
