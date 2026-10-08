@@ -30,39 +30,12 @@ export const SPECIALTIES = [
   "Bien-être",
 ];
 
+// Queen's Beauty by Laure, and Nora, Merveille, Marthe, Astride before her,
+// used to be hardcoded here. Each now has a real PocketBase account instead
+// (see pb_migrations/*_seed_*_account*.js) and can edit her own profile —
+// see usePublicProviders.js for how DB-backed providers are merged in.
+// TCHECKNA Henné is the only one still hardcoded (no email on file yet).
 export const PROVIDERS = [
-  {
-    slug: "queens-beauty-by-laure",
-    name: "Queen's Beauty by Laure",
-    businessName: "Queen's Beauty by Laure",
-    specialty: "Coiffure",
-    tagline: "Locks & tresses protectrices",
-    location: "Akpakpa, Cotonou",
-    whatsapp: "0154914777",
-    whatsappSecondary: "0140136965",
-    instagram: "https://instagram.com/queensbeautybylaure",
-    experience: "1 an d'expérience",
-    availability: "Disponibilité à renseigner, à confirmer directement avec la prestataire",
-    startingPrice: "15 000 FCFA",
-    rating: 5.0,
-    reviews: 9,
-    image: "/images/providers/queens-beauty-by-laure.jpg",
-    imageWebp: "/images/providers/queens-beauty-by-laure.webp",
-    // Her photo is a circular brand logo, not a portrait — shown as a round
-    // avatar instead of the usual full-bleed rectangular photo.
-    avatarShape: "circle",
-    bio: "Fondatrice de Queen's Beauty by Laure, Laure sublime les cheveux naturels avec des locks impeccables et des tresses protectrices, avec un an d'expérience passionnée sur le terrain à Akpakpa.",
-    services: [
-      { name: "Pose de locks", price: "20 000 FCFA", duration: "3h" },
-      { name: "Tresses protectrices", price: "15 000 FCFA", duration: "2h30" },
-      { name: "Entretien locks", price: "10 000 FCFA", duration: "1h30" },
-    ],
-    gallery: [
-      "/images/providers/queens-beauty-by-laure.jpg",
-      "/images/providers/queens-beauty-by-laure-2.jpg",
-      { type: "video", src: "/videos/providers/queens-beauty-by-laure-1.mp4" },
-    ],
-  },
   {
     slug: "tcheckna-henne",
     name: "TCHECKNA Henné",
