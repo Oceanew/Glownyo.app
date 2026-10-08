@@ -29,8 +29,8 @@ const CLIENT_FAQ = [
     a: "Oui, depuis votre espace, au plus tard 48h avant le rendez-vous. Merci de prévenir le plus tôt possible : c'est du temps réservé pour vous.",
   },
   {
-    q: 'Les photos des prestataires sont-elles réelles ?',
-    a: "Oui. Chaque prestataire publie ses propres réalisations. L'authenticité est une valeur fondamentale de Glownyo.",
+    q: 'Les photos et vidéos de réalisations sont-elles authentiques ?',
+    a: "Oui. Chaque nouvelle photo ou vidéo publiée par une prestataire est vérifiée par l'équipe Glownyo avant de devenir visible sur le site. L'authenticité est une valeur fondamentale de Glownyo.",
   },
 ];
 
