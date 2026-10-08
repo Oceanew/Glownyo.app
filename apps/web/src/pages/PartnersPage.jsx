@@ -104,50 +104,62 @@ const PartnersPage = () => {
                 viewport={{ once: true, margin: '-60px' }}
                 variants={fade}
                 transition={{ delay: (i % 3) * 0.08 }}
-                className="group rounded-2xl border border-[#C9922A]/15 bg-[#0F0F0F] p-7 flex flex-col hover:border-[#C9922A]/45 transition"
+                className="group rounded-2xl border border-[#C9922A]/15 bg-[#0F0F0F] flex flex-col overflow-hidden hover:border-[#C9922A]/45 transition"
               >
-                <div className="flex items-start gap-4">
-                  <div className="h-16 w-16 rounded-full overflow-hidden border border-[#C9922A]/30 shrink-0 bg-[#0A0A0A]">
-                    {p.logo ? (
-                      <img src={p.logo} alt={`Logo ${p.name}`} className="h-full w-full object-cover" />
-                    ) : (
-                      <div className="h-full w-full flex items-center justify-center font-display text-gold text-xl">
-                        {p.name?.charAt(0)}
-                      </div>
-                    )}
+                {/* Optional presentation photo — only partners with a `cover`
+                    set show it; everyone else keeps the plain card as before. */}
+                {p.cover && (
+                  <img
+                    src={p.cover}
+                    alt={`${p.name} — présentation`}
+                    loading="lazy"
+                    className="h-40 w-full object-cover"
+                  />
+                )}
+                <div className="p-7 flex flex-col flex-1">
+                  <div className="flex items-start gap-4">
+                    <div className="h-16 w-16 rounded-full overflow-hidden border border-[#C9922A]/30 shrink-0 bg-[#0A0A0A]">
+                      {p.logo ? (
+                        <img src={p.logo} alt={`Logo ${p.name}`} loading="lazy" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center font-display text-gold text-xl">
+                          {p.name?.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-display text-xl font-semibold leading-snug">{p.name}</h3>
+                      <span className="mt-1 inline-block text-xs text-gold tracking-wide">{p.specialty}</span>
+                      {p.location && (
+                        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#F5F0E6]/45">
+                          <MapPin size={12} /> {p.location}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <h3 className="font-display text-xl font-semibold leading-snug">{p.name}</h3>
-                    <span className="mt-1 inline-block text-xs text-gold tracking-wide">{p.specialty}</span>
-                    {p.location && (
-                      <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#F5F0E6]/45">
-                        <MapPin size={12} /> {p.location}
-                      </p>
-                    )}
+
+                  <p className="mt-5 text-sm text-[#F5F0E6]/65 leading-relaxed flex-1">{p.description}</p>
+
+                  <div className="mt-6 flex items-center gap-2 flex-wrap">
+                    {Object.keys(socialMeta).map((key) => {
+                      const url = p[key];
+                      const meta = socialMeta[key];
+                      if (!url) return null;
+                      const Icon = meta.icon;
+                      return (
+                        <a
+                          key={key}
+                          href={url}
+                          target="_blank"
+                          rel="noreferrer"
+                          aria-label={`${meta.label} de ${p.name}`}
+                          className="flex items-center justify-center h-10 w-10 rounded-full border border-[#C9922A]/25 text-[#F5F0E6]/70 hover:text-gold hover:border-[#C9922A]/60 hover:bg-[#C9922A]/10 transition"
+                        >
+                          <Icon size={17} strokeWidth={1.75} />
+                        </a>
+                      );
+                    })}
                   </div>
-                </div>
-
-                <p className="mt-5 text-sm text-[#F5F0E6]/65 leading-relaxed flex-1">{p.description}</p>
-
-                <div className="mt-6 flex items-center gap-2 flex-wrap">
-                  {Object.keys(socialMeta).map((key) => {
-                    const url = p[key];
-                    const meta = socialMeta[key];
-                    if (!url) return null;
-                    const Icon = meta.icon;
-                    return (
-                      <a
-                        key={key}
-                        href={url}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={`${meta.label} de ${p.name}`}
-                        className="flex items-center justify-center h-10 w-10 rounded-full border border-[#C9922A]/25 text-[#F5F0E6]/70 hover:text-gold hover:border-[#C9922A]/60 hover:bg-[#C9922A]/10 transition"
-                      >
-                        <Icon size={17} strokeWidth={1.75} />
-                      </a>
-                    );
-                  })}
                 </div>
               </motion.div>
             ))}
