@@ -353,3 +353,114 @@ routerAdd("POST", "/providers/refuse", (e) => {
     return e.internalServerError("failed to refuse provider", null);
   }
 }, $apis.requireAuth("users"));
+
+// GET /providers/pending-gallery — admin only. Lists every provider that
+// has at least one photo/video awaiting moderation in `gallery_pending`,
+// so new "réalisations" a provider uploads never go public until an admin
+// has reviewed them (guards against an inappropriate or AI-generated image).
+routerAdd("GET", "/providers/pending-gallery", (e) => {
+  if (!e.auth || e.auth.get("role") !== "admin") {
+    return e.unauthorizedError("unauthorized", null);
+  }
+
+  try {
+    const records = $app.findRecordsByFilter(
+      "users",
+      'gallery_pending != ""',
+      "created",
+      0,
+      0,
+    );
+
+    // $app.settings().meta.appURL is a stale value left over from the old
+    // Hostinger hosting and not reliable here — build the base URL from the
+    // actual incoming request instead (host header, promoted by Go from the
+    // Host request line, survives reverse proxies like Cloudflare intact).
+    const host = e.request.host;
+    const proto = /^(127\.0\.0\.1|localhost)(:|$)/.test(host) ? "http" : "https";
+    const baseUrl = `${proto}://${host}`;
+    const providers = records
+      .map((r) => {
+        const files = r.get("gallery_pending") || [];
+        if (!files.length) return null;
+        return {
+          id: r.id,
+          name: r.get("name") || "",
+          slug: r.get("slug") || "",
+          items: files.map((filename) => ({
+            filename,
+            url: `${baseUrl}/api/files/users/${r.id}/${filename}`,
+          })),
+        };
+      })
+      .filter(Boolean);
+
+    return e.json(200, providers);
+  } catch (err) {
+    $app.logger().error("failed to list pending gallery items", "err", String(err));
+    return e.internalServerError("failed to list pending gallery items", null);
+  }
+}, $apis.requireAuth("users"));
+
+// POST /providers/gallery/approve { id, filename } — admin only. Moves one
+// file from `gallery_pending` to the public `gallery` field.
+routerAdd("POST", "/providers/gallery/approve", (e) => {
+  if (!e.auth || e.auth.get("role") !== "admin") {
+    return e.unauthorizedError("unauthorized", null);
+  }
+
+  const body = e.requestInfo().body || {};
+  const id = body.id;
+  const filename = body.filename;
+  if (!id || !filename) {
+    return e.badRequestError("id and filename are required", null);
+  }
+
+  try {
+    const record = $app.findRecordById("users", id);
+    const pending = record.get("gallery_pending") || [];
+    if (!pending.includes(filename)) {
+      return e.badRequestError("file not found in gallery_pending", null);
+    }
+
+    // Same stale-appURL workaround as /providers/pending-gallery above.
+    const host = e.request.host;
+    const proto = /^(127\.0\.0\.1|localhost)(:|$)/.test(host) ? "http" : "https";
+    const fileUrl = `${proto}://${host}/api/files/users/${id}/${filename}`;
+    const file = $filesystem.fileFromURL(fileUrl, 30);
+
+    record.set("gallery+", file);
+    record.set("gallery_pending-", [filename]);
+    $app.save(record);
+
+    return e.json(200, { ok: true });
+  } catch (err) {
+    $app.logger().error("failed to approve gallery item", "err", String(err));
+    return e.internalServerError("failed to approve gallery item", null);
+  }
+}, $apis.requireAuth("users"));
+
+// POST /providers/gallery/reject { id, filename } — admin only. Discards
+// one pending file without publishing it.
+routerAdd("POST", "/providers/gallery/reject", (e) => {
+  if (!e.auth || e.auth.get("role") !== "admin") {
+    return e.unauthorizedError("unauthorized", null);
+  }
+
+  const body = e.requestInfo().body || {};
+  const id = body.id;
+  const filename = body.filename;
+  if (!id || !filename) {
+    return e.badRequestError("id and filename are required", null);
+  }
+
+  try {
+    const record = $app.findRecordById("users", id);
+    record.set("gallery_pending-", [filename]);
+    $app.save(record);
+    return e.json(200, { ok: true });
+  } catch (err) {
+    $app.logger().error("failed to reject gallery item", "err", String(err));
+    return e.internalServerError("failed to reject gallery item", null);
+  }
+}, $apis.requireAuth("users"));
