@@ -69,6 +69,7 @@ const mapDbProvider = (p) => {
     instagram: p.instagram || null,
     experience: p.experience || '',
     availability: p.availability || '',
+    availabilitySchedule: Array.isArray(p.availability_schedule) ? p.availability_schedule : null,
     startingPrice: p.starting_price_override || null,
     avatarShape: p.avatar_shape || undefined,
     rating: p.rating || null,

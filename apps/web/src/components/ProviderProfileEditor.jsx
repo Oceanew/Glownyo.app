@@ -18,6 +18,32 @@ const labelCls = 'text-xs uppercase tracking-wide text-[#F5F0E6]/50';
 const fileUrl = (id, filename) => `${pb.baseUrl}/api/files/users/${id}/${filename}`;
 const isVideoFilename = (name) => /\.(mp4|mov|webm)$/i.test(name || '');
 
+const SCHEDULE_DAYS = [
+  { code: 'mon', label: 'Lundi' },
+  { code: 'tue', label: 'Mardi' },
+  { code: 'wed', label: 'Mercredi' },
+  { code: 'thu', label: 'Jeudi' },
+  { code: 'fri', label: 'Vendredi' },
+  { code: 'sat', label: 'Samedi' },
+  { code: 'sun', label: 'Dimanche' },
+];
+
+// Builds one row per day, keeping any saved values and defaulting the rest
+// to a plausible 9h-18h so toggling a day on doesn't start from an empty
+// time field.
+const buildInitialSchedule = (saved) => {
+  const byDay = new Map(Array.isArray(saved) ? saved.map((d) => [d.day, d]) : []);
+  return SCHEDULE_DAYS.map(({ code }) => {
+    const existing = byDay.get(code);
+    return {
+      day: code,
+      enabled: existing ? !!existing.enabled : false,
+      start: existing?.start || '09:00',
+      end: existing?.end || '18:00',
+    };
+  });
+};
+
 const ProviderProfileEditor = () => {
   const { user } = useAuth();
 
@@ -40,6 +66,7 @@ const ProviderProfileEditor = () => {
       ? user.services
       : [{ name: '', price: '', duration: '' }],
   );
+  const [schedule, setSchedule] = useState(buildInitialSchedule(user?.availability_schedule));
   const [galleryUrls, setGalleryUrls] = useState(
     Array.isArray(user?.gallery_urls) ? user.gallery_urls : [],
   );
@@ -72,6 +99,16 @@ const ProviderProfileEditor = () => {
 
   const removeService = (index) => {
     setServices((list) => list.filter((_, i) => i !== index));
+  };
+
+  const toggleScheduleDay = (code) => {
+    setSchedule((list) => list.map((d) => (d.day === code ? { ...d, enabled: !d.enabled } : d)));
+    setSaved(false);
+  };
+
+  const setScheduleTime = (code, key, value) => {
+    setSchedule((list) => list.map((d) => (d.day === code ? { ...d, [key]: value } : d)));
+    setSaved(false);
   };
 
   const onAvatarChange = async (e) => {
@@ -151,10 +188,16 @@ const ProviderProfileEditor = () => {
       const cleanServices = services
         .map((s) => ({ name: (s.name || '').trim(), price: (s.price || '').trim(), duration: (s.duration || '').trim() }))
         .filter((s) => s.name);
+      // No day enabled means "not configured" — saved as null so the
+      // booking form keeps today's unrestricted behaviour instead of
+      // accidentally blocking every slot for a provider who never touched
+      // this section.
+      const cleanSchedule = schedule.some((d) => d.enabled) ? schedule : null;
       const updated = await pb.collection('users').update(user.id, {
         ...form,
         services: cleanServices,
         gallery_urls: galleryUrls,
+        availability_schedule: cleanSchedule,
       });
       pb.authStore.save(pb.authStore.token, updated);
       setSaved(true);
@@ -312,6 +355,54 @@ const ProviderProfileEditor = () => {
           >
             <Plus size={16} /> Ajouter une prestation
           </button>
+        </div>
+      </div>
+
+      {/* Weekly booking hours */}
+      <div className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6 sm:p-8">
+        <h2 className="font-display text-xl font-semibold">Horaires de réservation</h2>
+        <p className="mt-1.5 text-sm text-[#F5F0E6]/60">
+          Cochez les jours où vous recevez, et précisez vos horaires. Les clientes ne pourront
+          plus demander un rendez-vous en dehors de ces créneaux. Si aucun jour n'est coché, la
+          réservation reste ouverte sans restriction (comme aujourd'hui).
+        </p>
+        <div className="mt-5 flex flex-col gap-2.5">
+          {schedule.map((d) => {
+            const dayMeta = SCHEDULE_DAYS.find((s) => s.code === d.day);
+            return (
+              <div
+                key={d.day}
+                className="grid grid-cols-[1fr_auto_auto] sm:grid-cols-[140px_auto_1fr] gap-3 items-center"
+              >
+                <label className="inline-flex items-center gap-2.5 text-sm text-[#F5F0E6]/80">
+                  <input
+                    type="checkbox"
+                    checked={d.enabled}
+                    onChange={() => toggleScheduleDay(d.day)}
+                    className="accent-[#C9922A]"
+                  />
+                  {dayMeta.label}
+                </label>
+                <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                  <input
+                    type="time"
+                    value={d.start}
+                    disabled={!d.enabled}
+                    onChange={(e) => setScheduleTime(d.day, 'start', e.target.value)}
+                    className={`${inputCls} py-2 disabled:opacity-40`}
+                  />
+                  <span className="text-[#F5F0E6]/40 text-sm">à</span>
+                  <input
+                    type="time"
+                    value={d.end}
+                    disabled={!d.enabled}
+                    onChange={(e) => setScheduleTime(d.day, 'end', e.target.value)}
+                    className={`${inputCls} py-2 disabled:opacity-40`}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
