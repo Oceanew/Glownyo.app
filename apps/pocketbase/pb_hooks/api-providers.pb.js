@@ -31,6 +31,7 @@ routerAdd("GET", "/providers/public", (e) => {
       instagram: r.get("instagram") || "",
       experience: r.get("experience") || "",
       availability: r.get("availability") || "",
+      availability_schedule: r.get("availability_schedule") || null,
       starting_price_override: r.get("starting_price_override") || "",
       rating: r.get("rating") || 0,
       review_count: r.get("review_count") || 0,

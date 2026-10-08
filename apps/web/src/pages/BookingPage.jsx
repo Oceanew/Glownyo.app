@@ -6,6 +6,32 @@ import pb from '@/lib/pocketbaseClient';
 import apiServerClient from '@/lib/apiServerClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePublicProviders } from '@/lib/usePublicProviders';
+
+// JS Date#getDay(): 0 = Sunday ... 6 = Saturday.
+const DAY_CODES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+const dayCodeForDate = (dateStr) => {
+  if (!dateStr) return null;
+  const d = new Date(`${dateStr}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
+  return DAY_CODES[d.getDay()];
+};
+
+// Returns a human-readable blocking message when `date`/`time` fall outside
+// the provider's own weekly schedule, or '' when there's nothing to block
+// (no schedule set, date/time not chosen yet, or everything fits).
+const getScheduleIssue = (provider, date, time) => {
+  if (!provider || !Array.isArray(provider.availabilitySchedule) || !date) return '';
+  const code = dayCodeForDate(date);
+  const day = provider.availabilitySchedule.find((d) => d.day === code);
+  if (!day || !day.enabled) {
+    return `${provider.name} ne reçoit pas ce jour-là. Merci de choisir une autre date.`;
+  }
+  if (time && (time < day.start || time > day.end)) {
+    return `${provider.name} reçoit de ${day.start} à ${day.end} ce jour-là. Merci de choisir une heure dans cette plage.`;
+  }
+  return '';
+};
+
 const BookingPage = () => {
   const [params] = useSearchParams();
   const preset = params.get('prestataire') || '';
@@ -66,6 +92,14 @@ const BookingPage = () => {
       });
     }
   }, [form.provider]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Live feedback as the visitor picks a provider/date/time — same rule the
+  // submit handler enforces, computed here so the form can warn before she
+  // even tries to send the request.
+  const scheduleDay = chosen && Array.isArray(chosen.availabilitySchedule) && form.date
+    ? chosen.availabilitySchedule.find(d => d.day === dayCodeForDate(form.date))
+    : null;
+  const scheduleIssue = getScheduleIssue(chosen, form.date, form.time);
 
   const selectedServiceObj = chosen?.services?.find(s => s.name === (form.specialty || singleService));
   const amountFcfa = selectedServiceObj ? parseInt(String(selectedServiceObj.price).replace(/\D/g, ''), 10) : null;
@@ -204,6 +238,15 @@ const BookingPage = () => {
     setError('');
     setSlotError('');
     setSubmitting(true);
+
+    // Block a request that falls outside the provider's own weekly hours
+    // (when she's set any) before even checking slot availability.
+    const scheduleIssue = getScheduleIssue(chosen, form.date, form.time);
+    if (scheduleIssue) {
+      setSlotError(scheduleIssue);
+      setSubmitting(false);
+      return;
+    }
 
     // Concrete provider + date + time define a "créneau" that must be locked.
     // Re-check availability right before creating the record so a slot taken
@@ -474,8 +517,20 @@ const BookingPage = () => {
                 <input required type="date" value={form.date} onChange={set('date')} className={inputCls} />
               </Field>
               <Field label="Heure préférée" className="sm:col-span-1">
-                <input required type="time" value={form.time} onChange={set('time')} className={inputCls} />
+                <input
+                  required
+                  type="time"
+                  value={form.time}
+                  onChange={set('time')}
+                  min={scheduleDay?.enabled ? scheduleDay.start : undefined}
+                  max={scheduleDay?.enabled ? scheduleDay.end : undefined}
+                  className={inputCls}
+                />
               </Field>
+              {scheduleIssue && <div className="sm:col-span-2 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300 flex items-start gap-2">
+                <XCircle size={18} className="shrink-0 mt-0.5" />
+                <span>{scheduleIssue}</span>
+              </div>}
               <Field label="Notes (optionnel)" className="sm:col-span-2">
                 <textarea value={form.notes} onChange={set('notes')} rows={3} placeholder="Précisez vos attentes, longueur, style..." className={inputCls} />
               </Field>
