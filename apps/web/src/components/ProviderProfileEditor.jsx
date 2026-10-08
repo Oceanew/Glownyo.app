@@ -44,6 +44,9 @@ const ProviderProfileEditor = () => {
     Array.isArray(user?.gallery_urls) ? user.gallery_urls : [],
   );
   const [ownFiles, setOwnFiles] = useState(Array.isArray(user?.gallery) ? user.gallery : []);
+  const [pendingFiles, setPendingFiles] = useState(
+    Array.isArray(user?.gallery_pending) ? user.gallery_pending : [],
+  );
   const [avatarPreview, setAvatarPreview] = useState(
     user?.avatar ? fileUrl(user.id, user.avatar) : user?.avatar_url || '',
   );
@@ -89,21 +92,37 @@ const ProviderProfileEditor = () => {
     }
   };
 
+  // New uploads go to gallery_pending, not gallery: an admin reviews each
+  // one (photos/videos could come from anyone with account access, so they
+  // need a human check before going public) before it appears on the
+  // public profile.
   const onAddGalleryFiles = async (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
     setError('');
     setUploadingGallery(true);
     try {
-      const updated = await pb.collection('users').update(user.id, { 'gallery+': files });
+      const updated = await pb.collection('users').update(user.id, { 'gallery_pending+': files });
       pb.authStore.save(pb.authStore.token, updated);
-      setOwnFiles(Array.isArray(updated.gallery) ? updated.gallery : []);
+      setPendingFiles(Array.isArray(updated.gallery_pending) ? updated.gallery_pending : []);
     } catch (err) {
       console.error('gallery upload failed', err);
       setError("Impossible d'ajouter ces fichiers pour le moment (format ou taille non supportés ?).");
     } finally {
       setUploadingGallery(false);
       e.target.value = '';
+    }
+  };
+
+  const removePendingFile = async (filename) => {
+    setError('');
+    try {
+      const updated = await pb.collection('users').update(user.id, { 'gallery_pending-': [filename] });
+      pb.authStore.save(pb.authStore.token, updated);
+      setPendingFiles(Array.isArray(updated.gallery_pending) ? updated.gallery_pending : []);
+    } catch (err) {
+      console.error('pending gallery remove failed', err);
+      setError('Impossible de retirer ce fichier pour le moment.');
     }
   };
 
@@ -300,7 +319,8 @@ const ProviderProfileEditor = () => {
       <div className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6 sm:p-8">
         <h2 className="font-display text-xl font-semibold">Réalisations</h2>
         <p className="mt-1.5 text-sm text-[#F5F0E6]/60">
-          Photos et vidéos (MP4) affichées sur votre fiche publique.
+          Photos et vidéos affichées sur votre fiche publique. Chaque nouvel ajout est
+          vérifié par l'équipe GlowNyo avant de devenir visible.
         </p>
 
         <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -337,6 +357,26 @@ const ProviderProfileEditor = () => {
               <button
                 type="button"
                 onClick={() => removeOwnFile(filename)}
+                className="absolute top-2 right-2 bg-black/70 text-white rounded-full p-1.5 hover:bg-red-500/80 transition"
+                aria-label="Retirer"
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
+          ))}
+          {pendingFiles.map((filename) => (
+            <div key={filename} className="relative rounded-2xl overflow-hidden border border-[#C9922A]/15 aspect-square opacity-70">
+              {isVideoFilename(filename) ? (
+                <video src={fileUrl(user.id, filename)} muted playsInline className="w-full h-full object-cover" />
+              ) : (
+                <img src={fileUrl(user.id, filename)} alt="Réalisation en attente" className="w-full h-full object-cover" />
+              )}
+              <span className="absolute bottom-2 left-2 right-2 rounded-full bg-black/80 text-gold text-[10px] font-semibold uppercase tracking-wide text-center py-1">
+                En attente de validation
+              </span>
+              <button
+                type="button"
+                onClick={() => removePendingFile(filename)}
                 className="absolute top-2 right-2 bg-black/70 text-white rounded-full p-1.5 hover:bg-red-500/80 transition"
                 aria-label="Retirer"
               >

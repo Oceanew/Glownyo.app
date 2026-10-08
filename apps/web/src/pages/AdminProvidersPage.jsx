@@ -10,6 +10,7 @@ import {
   PowerOff,
   Mail,
   MessageCircle,
+  Image as ImageIcon,
 } from 'lucide-react';
 import AdminNav from '@/components/AdminNav';
 import apiServerClient from '@/lib/apiServerClient';
@@ -21,9 +22,11 @@ const AdminProvidersPage = () => {
   const { isAdmin } = useAuth();
   const [pending, setPending] = useState([]);
   const [active, setActive] = useState([]);
+  const [pendingGallery, setPendingGallery] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [actingId, setActingId] = useState(null);
+  const [actingGalleryKey, setActingGalleryKey] = useState(null);
   const [actionMsg, setActionMsg] = useState(null);
 
   const authHeaders = () => ({
@@ -35,20 +38,23 @@ const AdminProvidersPage = () => {
     setLoading(true);
     setError('');
     try {
-      const [pRes, aRes] = await Promise.all([
+      const [pRes, aRes, gRes] = await Promise.all([
         apiServerClient.fetch('/providers/pending', { headers: authHeaders() }),
         apiServerClient.fetch('/providers/active', { headers: authHeaders() }),
+        apiServerClient.fetch('/providers/pending-gallery', { headers: authHeaders() }),
       ]);
       if (pRes.status === 401) {
         setError("Accès refusé : votre compte n'est pas administrateur.");
         return;
       }
-      const [pData, aData] = await Promise.all([
+      const [pData, aData, gData] = await Promise.all([
         pRes.ok ? pRes.json() : [],
         aRes.ok ? aRes.json() : [],
+        gRes.ok ? gRes.json() : [],
       ]);
       setPending(pData);
       setActive(aData);
+      setPendingGallery(gData);
     } catch (err) {
       console.error('failed to load providers', err);
       setError('Impossible de charger les demandes pour le moment.');
@@ -142,6 +148,65 @@ const AdminProvidersPage = () => {
     }
   };
 
+  const approveGalleryItem = async (providerId, filename) => {
+    const key = `${providerId}:${filename}`;
+    setActingGalleryKey(key);
+    setActionMsg(null);
+    try {
+      const res = await apiServerClient.fetch('/providers/gallery/approve', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ id: providerId, filename }),
+      });
+      if (!res.ok) throw new Error('approve_failed');
+      setPendingGallery((prev) =>
+        prev
+          .map((p) =>
+            p.id === providerId
+              ? { ...p, items: p.items.filter((it) => it.filename !== filename) }
+              : p,
+          )
+          .filter((p) => p.items.length > 0),
+      );
+      setActionMsg({ type: 'success', text: 'Photo/vidéo validée : elle est maintenant visible sur la fiche publique.' });
+    } catch (err) {
+      console.error('approve gallery item failed', err);
+      setActionMsg({ type: 'error', text: "La validation a échoué. Réessayez dans un instant." });
+    } finally {
+      setActingGalleryKey(null);
+    }
+  };
+
+  const rejectGalleryItem = async (providerId, filename) => {
+    if (!window.confirm('Rejeter définitivement ce fichier ? Il ne sera pas publié.')) return;
+    const key = `${providerId}:${filename}`;
+    setActingGalleryKey(key);
+    setActionMsg(null);
+    try {
+      const res = await apiServerClient.fetch('/providers/gallery/reject', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ id: providerId, filename }),
+      });
+      if (!res.ok) throw new Error('reject_failed');
+      setPendingGallery((prev) =>
+        prev
+          .map((p) =>
+            p.id === providerId
+              ? { ...p, items: p.items.filter((it) => it.filename !== filename) }
+              : p,
+          )
+          .filter((p) => p.items.length > 0),
+      );
+      setActionMsg({ type: 'warn', text: 'Fichier rejeté.' });
+    } catch (err) {
+      console.error('reject gallery item failed', err);
+      setActionMsg({ type: 'error', text: "Le rejet a échoué. Réessayez dans un instant." });
+    } finally {
+      setActingGalleryKey(null);
+    }
+  };
+
   if (!isAdmin) {
     return (
       <div className="pt-32 pb-24 mx-auto max-w-md px-5 sm:px-8 text-center">
@@ -157,6 +222,8 @@ const AdminProvidersPage = () => {
   }
 
   const pendingOpen = pending.filter((p) => p.provider_request_status !== 'refused');
+  const totalPendingGalleryItems = pendingGallery.reduce((sum, p) => sum + p.items.length, 0);
+  const isVideoFile = (name) => /\.(mp4|mov|webm)$/i.test(name || '');
 
   return (
     <div className="pt-32 pb-24 mx-auto max-w-[90rem] px-5 sm:px-8">
@@ -180,6 +247,64 @@ const AdminProvidersPage = () => {
         >
           {actionMsg.text}
         </div>
+      )}
+
+      {/* Pending gallery items */}
+      {pendingGallery.length > 0 && (
+        <section className="mt-10">
+          <div className="flex items-center gap-3">
+            <h2 className="font-display text-2xl font-semibold">Réalisations à valider</h2>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C9922A]/30 bg-[#C9922A]/10 text-gold px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+              <ImageIcon size={12} /> {totalPendingGalleryItems} en attente
+            </span>
+          </div>
+          <p className="mt-2 text-sm text-[#F5F0E6]/55">
+            Photos et vidéos envoyées par les prestataires depuis leur espace. Elles ne sont
+            visibles publiquement qu'après validation ici.
+          </p>
+
+          <div className="mt-6 grid gap-5">
+            {pendingGallery.map((p) => (
+              <div key={p.id} className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6">
+                <h3 className="font-display text-lg font-semibold">{p.name || '—'}</h3>
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {p.items.map((item) => {
+                    const key = `${p.id}:${item.filename}`;
+                    const busy = actingGalleryKey === key;
+                    return (
+                      <div key={item.filename} className="relative rounded-2xl overflow-hidden border border-[#C9922A]/15 aspect-square">
+                        {isVideoFile(item.filename) ? (
+                          <video src={item.url} muted playsInline controls className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={item.url} alt="Réalisation à valider" className="w-full h-full object-cover" />
+                        )}
+                        <div className="absolute bottom-0 inset-x-0 flex gap-1.5 p-1.5 bg-gradient-to-t from-black/90 to-transparent">
+                          <button
+                            type="button"
+                            onClick={() => approveGalleryItem(p.id, item.filename)}
+                            disabled={busy}
+                            className="flex-1 inline-flex items-center justify-center gap-1 gold-gradient text-[#0A0A0A] font-semibold py-1.5 rounded-full text-xs hover:brightness-110 transition disabled:opacity-60"
+                          >
+                            {busy ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
+                            Valider
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => rejectGalleryItem(p.id, item.filename)}
+                            disabled={busy}
+                            className="flex-1 inline-flex items-center justify-center gap-1 border border-red-500/50 bg-black/40 text-red-400 font-semibold py-1.5 rounded-full text-xs hover:bg-red-500/10 transition disabled:opacity-60"
+                          >
+                            <XCircle size={13} /> Rejeter
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
       {/* Pending requests */}
