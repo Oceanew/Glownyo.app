@@ -84,7 +84,12 @@ onRecordAfterUpdateSuccess((e) => {
   if (record.get("provider_activated_notify") === true) {
     const recipient = record.get("email");
     const name = record.get("name") || "";
-    const appUrl = $app.settings().meta.appURL;
+    // $app.settings().meta.appURL is a stale value left over from the old
+    // Hostinger hosting and points at the backend, not the site anyway —
+    // this link needs the frontend's own address. FRONTEND_URL is an env
+    // var so it can be updated without a new deploy (e.g. once glownyo.app
+    // is the live domain); the fallback below is today's actual address.
+    const appUrl = $os.getenv("FRONTEND_URL") || "https://glownyo-app-web.vercel.app";
     const loginUrl = `${appUrl}/connexion`;
 
     const html = `

@@ -13,7 +13,12 @@
 // failure never blocks activation; a failed send is PocketBase's own concern
 // here, same as any other mailer send.
 onMailerRecordPasswordResetSend((e) => {
-  const appUrl = $app.settings().meta.appURL;
+  // $app.settings().meta.appURL is a stale value left over from the old
+  // Hostinger hosting (never updated after moving to PocketBase Cloud), so
+  // it's not used here. PB_PUBLIC_URL is this PocketBase instance's own
+  // public address — set it as an env var if the instance ever moves to a
+  // custom domain; the fallback below is today's actual address.
+  const appUrl = $os.getenv("PB_PUBLIC_URL") || "https://quhwg47byahipxz.ba7w.pocketbasecloud.com";
   const link = `${appUrl}/_/#/auth/confirm-password-reset/${e.meta.token}`;
   const isActivation = e.record.get("pending_activation") === true;
 
