@@ -126,11 +126,19 @@ routerAdd("POST", "/providers/toggle-active", (e) => {
   try {
     const record = $app.findRecordById("users", id);
     const isStandalone = record.get("role") === "provider";
+    const wasActive = isStandalone
+      ? record.get("validated") === true
+      : record.get("provider_request_status") === "validated";
 
     if (isStandalone) {
       record.set("validated", active);
     } else {
       record.set("provider_request_status", active ? "validated" : "none");
+    }
+    // Only notify on an actual state change — avoids an email on a
+    // redundant toggle call (e.g. a double click or a retried request).
+    if (active !== wasActive) {
+      record.set(active ? "provider_reactivated_notify" : "provider_paused_notify", true);
     }
     $app.save(record);
 

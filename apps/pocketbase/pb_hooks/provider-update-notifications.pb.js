@@ -135,5 +135,104 @@ onRecordAfterUpdateSuccess((e) => {
     }
   }
 
+  // 3) Admin just paused a provider account (/providers/toggle-active) →
+  //    let her know she's no longer visible on the public site, without
+  //    implying anything was deleted.
+  if (record.get("provider_paused_notify") === true) {
+    const recipient = record.get("email");
+    const name = record.get("name") || "";
+
+    const html = `
+      <div style="font-family: Montserrat, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0A0A0A; color: #F5F0E6; padding: 32px; border: 1px solid #C9922A33; border-radius: 16px;">
+        <h1 style="font-family: 'Playfair Display', Georgia, serif; color: #C9922A; margin: 0 0 8px;">Votre compte prestataire GlowNyo est en pause</h1>
+        <p style="color: #F5F0E6; opacity: 0.8;">Bonjour${name ? " " + name : ""},</p>
+        <p style="color: #F5F0E6; opacity: 0.8;">L'équipe GlowNyo a mis votre compte prestataire en pause. Votre fiche n'apparaît plus sur le site public et l'accès à votre espace prestataire est temporairement suspendu.</p>
+        <p style="color: #F5F0E6; opacity: 0.8;">Rassurez-vous : aucune donnée n'est supprimée — votre profil, vos prestations et vos photos sont conservés tels quels, et votre compte peut être réactivé à tout moment.</p>
+        <p style="color: #F5F0E6; opacity: 0.8;">Pour toute question, contactez l'équipe GlowNyo.</p>
+        <p style="color: #C9922A; font-family: 'Playfair Display', Georgia, serif; font-size: 18px; margin-top: 24px;">GlowNyo</p>
+        <p style="color: #F5F0E6; opacity: 0.4; font-size: 12px;">Rayonne de l'intérieur, brille de l'extérieur.</p>
+      </div>
+    `;
+
+    const msg = new MailerMessage({
+      from: { name: "GlowNyo" },
+      to: [{ address: recipient }],
+      subject: "Votre compte prestataire GlowNyo est en pause",
+      html: html,
+    });
+
+    try {
+      $app.newMailClient().send(msg);
+    } catch (err) {
+      $app.logger().error(
+        "provider paused notification email failed",
+        "err",
+        String(err),
+      );
+    }
+
+    try {
+      record.set("provider_paused_notify", false);
+      $app.save(record);
+    } catch (err) {
+      $app.logger().error(
+        "failed to clear provider_paused_notify flag",
+        "err",
+        String(err),
+      );
+    }
+  }
+
+  // 4) Admin just reactivated a paused provider account → welcome her back,
+  //    with the same frontend login link used for standard activation.
+  if (record.get("provider_reactivated_notify") === true) {
+    const recipient = record.get("email");
+    const name = record.get("name") || "";
+    const appUrl = $os.getenv("FRONTEND_URL") || "https://glownyo-app-web.vercel.app";
+    const loginUrl = `${appUrl}/connexion`;
+
+    const html = `
+      <div style="font-family: Montserrat, Arial, sans-serif; max-width: 560px; margin: 0 auto; background: #0A0A0A; color: #F5F0E6; padding: 32px; border: 1px solid #C9922A33; border-radius: 16px;">
+        <h1 style="font-family: 'Playfair Display', Georgia, serif; color: #C9922A; margin: 0 0 8px;">Votre compte prestataire GlowNyo est de nouveau actif 🎉</h1>
+        <p style="color: #F5F0E6; opacity: 0.8;">Bonjour${name ? " " + name : ""},</p>
+        <p style="color: #F5F0E6; opacity: 0.8;">Bonne nouvelle : l'équipe GlowNyo a réactivé votre compte prestataire. Votre fiche est de nouveau visible sur le site et vous avez retrouvé l'accès à votre espace.</p>
+        <p style="color: #F5F0E6; opacity: 0.8;">Connectez-vous avec <strong>votre email et mot de passe habituels</strong>, rien n'a changé de ce côté.</p>
+        <p style="margin: 24px 0;">
+          <a href="${loginUrl}" style="display: inline-block; background: linear-gradient(135deg, #E8C877, #C9922A); color: #0A0A0A; font-weight: 700; text-decoration: none; padding: 14px 28px; border-radius: 999px;">Accéder à mon espace</a>
+        </p>
+        <p style="color: #C9922A; font-family: 'Playfair Display', Georgia, serif; font-size: 18px; margin-top: 24px;">Merci de votre confiance — GlowNyo</p>
+        <p style="color: #F5F0E6; opacity: 0.4; font-size: 12px;">Rayonne de l'intérieur, brille de l'extérieur.</p>
+      </div>
+    `;
+
+    const msg = new MailerMessage({
+      from: { name: "GlowNyo" },
+      to: [{ address: recipient }],
+      subject: "Votre compte prestataire GlowNyo est de nouveau actif 🎉",
+      html: html,
+    });
+
+    try {
+      $app.newMailClient().send(msg);
+    } catch (err) {
+      $app.logger().error(
+        "provider reactivated notification email failed",
+        "err",
+        String(err),
+      );
+    }
+
+    try {
+      record.set("provider_reactivated_notify", false);
+      $app.save(record);
+    } catch (err) {
+      $app.logger().error(
+        "failed to clear provider_reactivated_notify flag",
+        "err",
+        String(err),
+      );
+    }
+  }
+
   e.next();
 }, "users");
