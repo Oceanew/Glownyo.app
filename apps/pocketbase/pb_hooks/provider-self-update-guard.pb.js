@@ -28,6 +28,8 @@ onRecordUpdateRequest((e) => {
       "provider_request_status",
       "provider_request_notify",
       "provider_activated_notify",
+      "provider_paused_notify",
+      "provider_reactivated_notify",
       "email",
       "emailVisibility",
       "verified",
