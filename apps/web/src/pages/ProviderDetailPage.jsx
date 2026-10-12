@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Star, MapPin, MessageCircle, CalendarCheck, ArrowLeft, Clock, Instagram, CalendarClock, Tag, Play } from 'lucide-react';
-import { waLinkTo } from '@/data/site';
+import { Star, MapPin, CalendarCheck, ArrowLeft, Clock, Instagram, CalendarClock, Tag, Play } from 'lucide-react';
 import { usePublicProviders } from '@/lib/usePublicProviders';
 import { Helmet } from 'react-helmet';
 import ProviderReviews from '@/components/ProviderReviews';
@@ -70,14 +69,6 @@ const ProviderDetailPage = () => {
               >
                 <CalendarCheck size={18} /> Réserver
               </Link>
-              <a
-                href={waLinkTo(p.whatsapp, `Bonjour ${p.name}, je vous ai trouvée sur GlowNyo et souhaite en savoir plus sur vos prestations de ${p.specialty}.`)}
-                target="_blank"
-                rel="noreferrer"
-                className="border border-[#25D366]/60 text-[#25D366] px-6 py-4 rounded-full flex items-center justify-center gap-2 hover:bg-[#25D366]/10 transition"
-              >
-                <MessageCircle size={18} /> Contacter sur WhatsApp
-              </a>
               {p.instagram && (
                 <a
                   href={p.instagram}
