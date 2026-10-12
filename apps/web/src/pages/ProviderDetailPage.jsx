@@ -102,7 +102,7 @@ const ProviderDetailPage = () => {
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 text-gold">
-                  <Star size={15} /> Nouvelle prestataire
+                  <Star size={15} /> Pas encore d'avis
                 </span>
               )}
               <span className="flex items-center gap-1.5 text-[#F5F0E6]/60">

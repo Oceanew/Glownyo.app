@@ -362,8 +362,8 @@ const ProviderProfileEditor = () => {
       <div className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6 sm:p-8">
         <h2 className="font-display text-xl font-semibold">Horaires de réservation</h2>
         <p className="mt-1.5 text-sm text-[#F5F0E6]/60">
-          Cochez les jours où vous recevez, et précisez vos horaires. Les clientes ne pourront
-          plus demander un rendez-vous en dehors de ces créneaux. Si aucun jour n'est coché, la
+          Cochez les jours où vous recevez, et précisez vos horaires. Les personnes clientes ne
+          pourront plus demander un rendez-vous en dehors de ces créneaux. Si aucun jour n'est coché, la
           réservation reste ouverte sans restriction (comme aujourd'hui).
         </p>
         <div className="mt-5 flex flex-col gap-2.5">

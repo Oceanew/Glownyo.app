@@ -84,14 +84,14 @@ const HomePage = () => {
           {[{
           icon: CalendarCheck,
           title: 'Réservation instantanée',
-          desc: 'Choisissez une prestataire, un créneau et confirmez en quelques clics.'
+          desc: 'Choisissez votre prestataire, un créneau et confirmez en quelques clics.'
         }, {
           icon: Smartphone,
           title: 'Paiement Mobile Money',
           desc: 'Réglez en toute simplicité avec FedaPay — MTN, Moov et cartes acceptées.'
         }, {
           icon: ShieldCheck,
-          title: 'Prestataires vérifiées',
+          title: 'Prestataires de confiance',
           desc: 'Chaque personne prestataire est sélectionnée pour son savoir-faire et sa fiabilité.'
         }].map((f, i) => <motion.div key={f.title} initial="hidden" whileInView="show" viewport={{
           once: true,

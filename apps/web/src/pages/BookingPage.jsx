@@ -224,7 +224,7 @@ const BookingPage = () => {
   };
 
   const buildMessage = () => {
-    const providerLabel = chosen ? chosen.name : 'une prestataire GlowNyo';
+    const providerLabel = chosen ? chosen.name : 'une personne prestataire GlowNyo';
     return `Bonjour GlowNyo ! Je souhaite réserver un rendez-vous.
 • Nom : ${form.name}
 • Téléphone : ${form.phone}

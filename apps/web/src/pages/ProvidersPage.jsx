@@ -100,7 +100,7 @@ const ProvidersPage = () => {
       </div>
 
       {list.length === 0 && (
-        <p className="mt-16 text-center text-[#F5F0E6]/50">Aucune prestataire dans cette catégorie pour le moment.</p>
+        <p className="mt-16 text-center text-[#F5F0E6]/50">Aucun résultat dans cette catégorie pour le moment.</p>
       )}
 
       {/* PROVIDER SIGN-UP */}

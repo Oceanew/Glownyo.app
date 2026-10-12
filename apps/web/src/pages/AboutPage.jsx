@@ -79,7 +79,7 @@ const AboutPage = () => {
         <h2 className="mt-4 font-display text-3xl sm:text-5xl font-semibold leading-tight">
           Faire rayonner la beauté africaine, partout
         </h2>
-        <p className="mt-6 text-[#F5F0E6]/70 text-lg">Demain, GlowNyo sera la référence beauté &amp; bien-être en Afrique.&nbsp; Une communauté où chaque femme et chaque homme trouve la prestataire idéale, en quelques clics.</p>
+        <p className="mt-6 text-[#F5F0E6]/70 text-lg">Demain, GlowNyo sera la référence beauté &amp; bien-être en Afrique.&nbsp; Une communauté où chaque personne trouve la prestation idéale, en quelques clics.</p>
         <Link to="/prestataires" className="mt-9 inline-flex items-center gap-2 gold-gradient text-[#0A0A0A] font-semibold px-9 py-4 rounded-full hover:brightness-110 transition">
           Découvrir les prestataires <ArrowRight size={18} />
         </Link>
