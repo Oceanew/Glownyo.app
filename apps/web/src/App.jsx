@@ -25,6 +25,7 @@ import FAQPage from './pages/FAQPage';
 import NewsPage from './pages/NewsPage';
 import NewsDetailPage from './pages/NewsDetailPage';
 import AdminNewsPage from './pages/AdminNewsPage';
+import AdminSiteTextsPage from './pages/AdminSiteTextsPage';
 
 function App() {
     return (
@@ -47,6 +48,7 @@ function App() {
                         <Route path="/admin/prestataires" element={<AdminRoute><AdminProvidersPage /></AdminRoute>} />
                         <Route path="/admin/avis" element={<AdminRoute><AdminReviewsPage /></AdminRoute>} />
                         <Route path="/admin/actualites" element={<AdminRoute><AdminNewsPage /></AdminRoute>} />
+                        <Route path="/admin/textes" element={<AdminRoute><AdminSiteTextsPage /></AdminRoute>} />
                         <Route path="/devenir-prestataire" element={<ProviderSignupPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/cgv" element={<TermsPage />} />
