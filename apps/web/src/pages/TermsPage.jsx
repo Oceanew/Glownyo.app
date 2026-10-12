@@ -42,7 +42,7 @@ const TermsPage = () => {
         <title>Conditions générales de vente — GlowNyo</title>
         <meta
           name="description"
-          content="Conditions générales de vente de GlowNyo : réservation, tarifs, paiement Mobile Money, annulation et responsabilité entre clients et prestataires."
+          content="Conditions générales de vente de GlowNyo : réservation, tarifs, paiement, annulation et responsabilité entre clients et prestataires."
         />
       </Helmet>
 
