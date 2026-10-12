@@ -58,7 +58,7 @@ const HomePage = () => {
               <br />
               <span className="text-gold-gradient italic">{t('accueil_hero_titre_2', 'brille de l\'extérieur')}</span>
             </h1>
-            <p className="mt-6 text-lg text-[#F5F0E6]/75 leading-relaxed max-w-xl">{t('accueil_hero_description', "La plateforme afro-moderne qui connecte les clients aux prestataires beauté & bien-être de référence au Bénin et en Afrique. Réservez en quelques clics, payez en Mobile Money.")}</p>
+            <p className="mt-6 text-lg text-[#F5F0E6]/75 leading-relaxed max-w-xl">{t('accueil_hero_description', "La plateforme afro-moderne qui connecte les clients aux prestataires beauté & bien-être de référence au Bénin et en Afrique. Réservez en quelques clics.")}</p>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link to="/reservation" className="group gold-gradient text-[#0A0A0A] font-semibold px-8 py-4 rounded-full flex items-center gap-2 hover:brightness-110 transition">
                 {t('accueil_hero_bouton_reserver', 'Réserver un rendez-vous')}
@@ -248,7 +248,7 @@ const HomePage = () => {
               }, {
                 icon: Users,
                 title: t('accueil_benefice3_titre', 'Réservations simplifiées'),
-                desc: t('accueil_benefice3_description', 'Un agenda en ligne, un paiement Mobile Money intégré, zéro paperasse.')
+                desc: t('accueil_benefice3_description', 'Un agenda en ligne, des réservations centralisées, zéro paperasse.')
               }].map(b => <div key={b.title} className="flex items-start gap-4">
                     <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#C9922A]/30 bg-[#C9922A]/10">
                       <b.icon className="text-gold" size={20} strokeWidth={1.5} />
