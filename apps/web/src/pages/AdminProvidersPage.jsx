@@ -386,6 +386,12 @@ const AdminProvidersPage = () => {
                       <p className="mt-1 text-[#F5F0E6]/75 whitespace-pre-wrap">{p.bio}</p>
                     </div>
                   )}
+                  {p.parrain && (
+                    <div className="sm:col-span-2">
+                      <span className="text-gold font-medium">Qui lui a parlé de Glownyo : </span>
+                      <span className="text-[#F5F0E6]/80">{p.parrain}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -446,6 +452,9 @@ const AdminProvidersPage = () => {
               <div className="mt-4 grid grid-cols-1 gap-2 text-sm">
                 <p className="text-[#F5F0E6]/70"><span className="text-gold">Spécialité :</span> {p.specialty || '—'}</p>
                 <p className="text-[#F5F0E6]/70"><span className="text-gold">Localisation :</span> {p.location || '—'}</p>
+                {p.parrain && (
+                  <p className="text-[#F5F0E6]/70"><span className="text-gold">Qui lui a parlé de Glownyo :</span> {p.parrain}</p>
+                )}
               </div>
 
               <div className="mt-4 flex flex-wrap items-center gap-3 pt-4 border-t border-[#C9922A]/10">
