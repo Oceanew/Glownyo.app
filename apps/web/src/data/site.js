@@ -39,6 +39,12 @@ export const PROVIDERS = [
   {
     slug: "tcheckna-henne",
     name: "TCHECKNA Henné",
+    // Not a real PocketBase account yet, so she isn't in the admin's
+    // reorderable "Ordre des prestataires" list — this fixed value keeps
+    // her just behind whichever DB provider Oceane currently ranks first
+    // (DB providers are always reordered with sequential integers starting
+    // at 0), permanently, however the rest get reordered later.
+    ordreAffichage: 0.5,
     businessName: "tcheckna_henne",
     specialty: "Henné",
     tagline: "Henné moderne, sourcils et cils",

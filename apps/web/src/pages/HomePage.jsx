@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Star, MapPin, ShieldCheck, Smartphone, CalendarCheck, Sparkles, Rocket, Users, TrendingUp, CalendarClock, MessageCircle, Newspaper, CalendarDays } from 'lucide-react';
-import { PROVIDERS, SPECIALTIES, IMAGES, LOGO, CALENDLY_URL, teamWaLink } from '@/data/site';
+import { SPECIALTIES, IMAGES, LOGO, CALENDLY_URL, teamWaLink } from '@/data/site';
 import { fetchPublishedNews, formatNewsDate } from '@/pages/NewsPage';
 import useSiteTexts from '@/lib/useSiteTexts';
+import usePublicProviders from '@/lib/usePublicProviders';
 const fade = {
   hidden: {
     opacity: 0,
@@ -21,6 +22,7 @@ const fade = {
 };
 const HomePage = () => {
   const { t } = useSiteTexts();
+  const { providers } = usePublicProviders();
   const [news, setNews] = useState([]);
 
   useEffect(() => {
@@ -121,7 +123,7 @@ const HomePage = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROVIDERS.slice(0, 6).map((p, i) => <motion.div key={p.slug} initial="hidden" whileInView="show" viewport={{
+          {providers.slice(0, 6).map((p, i) => <motion.div key={p.slug} initial="hidden" whileInView="show" viewport={{
           once: true,
           margin: '-60px'
         }} variants={fade} transition={{

@@ -33,6 +33,7 @@ onRecordUpdateRequest((e) => {
       "email",
       "emailVisibility",
       "verified",
+      "ordre_affichage",
     ];
     const original = e.record.original();
     for (const field of protectedFields) {

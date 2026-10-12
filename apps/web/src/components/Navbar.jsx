@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, UserCircle, Scissors, ShieldCheck, ChevronDown, LayoutDashboard, CalendarDays, Users, Star, Newspaper, LogOut, FileText } from 'lucide-react';
+import { Menu, X, UserCircle, Scissors, ShieldCheck, ChevronDown, LayoutDashboard, CalendarDays, Users, Star, Newspaper, LogOut, FileText, ArrowUpDown } from 'lucide-react';
 import { LOGO } from '@/data/site';
 import { useAuth } from '@/contexts/AuthContext';
 import SpaceSwitcher from '@/components/SpaceSwitcher';
@@ -131,6 +131,9 @@ const Navbar = () => {
                           <Link to="/admin/textes" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
                             <FileText size={15} className="text-gold" /> Textes du site
                           </Link>
+                          <Link to="/admin/ordre-prestataires" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                            <ArrowUpDown size={15} className="text-gold" /> Ordre des prestataires
+                          </Link>
                         </>
                       )}
                       <Link to="/mon-compte" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
@@ -258,6 +261,9 @@ const Navbar = () => {
                   </Link>
                   <Link to="/admin/textes" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
                     <FileText size={15} className="text-gold" /> Textes du site
+                  </Link>
+                  <Link to="/admin/ordre-prestataires" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                    <ArrowUpDown size={15} className="text-gold" /> Ordre des prestataires
                   </Link>
                 </div>
               )}

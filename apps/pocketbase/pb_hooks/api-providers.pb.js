@@ -12,7 +12,7 @@ routerAdd("GET", "/providers/public", (e) => {
     const records = $app.findRecordsByFilter(
       "users",
       '(role = "provider" && validated = true) || provider_request_status = "validated"',
-      "created",
+      "ordre_affichage",
       0,
       0,
     );
@@ -41,6 +41,7 @@ routerAdd("GET", "/providers/public", (e) => {
       avatar_shape: r.get("avatar_shape") || "",
       gallery: r.get("gallery") || [],
       gallery_urls: r.get("gallery_urls") || [],
+      ordre_affichage: r.get("ordre_affichage") || 0,
       source: "db",
     }));
 
@@ -50,6 +51,67 @@ routerAdd("GET", "/providers/public", (e) => {
     return e.internalServerError("failed to list public providers", null);
   }
 });
+
+// GET /providers/order — admin only. Same set of providers shown publicly
+// (/providers/public), sorted by their current display order, with just
+// enough fields for a compact reorder list.
+routerAdd("GET", "/providers/order", (e) => {
+  if (!e.auth || e.auth.get("role") !== "admin") {
+    return e.unauthorizedError("unauthorized", null);
+  }
+
+  try {
+    const records = $app.findRecordsByFilter(
+      "users",
+      '(role = "provider" && validated = true) || provider_request_status = "validated"',
+      "ordre_affichage",
+      0,
+      0,
+    );
+
+    const providers = records.map((r) => ({
+      id: r.id,
+      name: r.get("name") || "",
+      specialty: r.get("specialty") || "",
+      avatar: r.get("avatar") || "",
+      avatar_url: r.get("avatar_url") || "",
+    }));
+
+    return e.json(200, providers);
+  } catch (err) {
+    $app.logger().error("failed to list provider order", "err", String(err));
+    return e.internalServerError("failed to list provider order", null);
+  }
+}, $apis.requireAuth("users"));
+
+// POST /providers/order { order: [id1, id2, ...] } — admin only. Persists
+// the exact order given (the admin's arrows-then-Enregistrer flow sends the
+// full list every time) as sequential 0-based values, so the relative order
+// among DB providers is preserved across saves no matter how many providers
+// come and go.
+routerAdd("POST", "/providers/order", (e) => {
+  if (!e.auth || e.auth.get("role") !== "admin") {
+    return e.unauthorizedError("unauthorized", null);
+  }
+
+  const body = e.requestInfo().body || {};
+  const order = body.order;
+  if (!Array.isArray(order) || order.length === 0) {
+    return e.badRequestError("order (non-empty array of ids) is required", null);
+  }
+
+  try {
+    order.forEach((id, index) => {
+      const record = $app.findRecordById("users", id);
+      record.set("ordre_affichage", index);
+      $app.save(record);
+    });
+    return e.json(200, { ok: true });
+  } catch (err) {
+    $app.logger().error("failed to save provider order", "err", String(err));
+    return e.internalServerError("failed to save provider order", null);
+  }
+}, $apis.requireAuth("users"));
 
 // Admin management of active provider accounts.
 //
@@ -295,6 +357,14 @@ routerAdd("POST", "/providers/validate", (e) => {
   try {
     const record = $app.findRecordById("users", id);
     const role = record.get("role");
+
+    // First-time validation puts a provider at the end of the public
+    // display order (a huge, always-increasing value) — re-validating an
+    // account that already has one (e.g. paused then reactivated) leaves
+    // its position untouched.
+    if (!record.get("ordre_affichage")) {
+      record.set("ordre_affichage", Date.now());
+    }
 
     if (role === "provider") {
       record.set("validated", true);
