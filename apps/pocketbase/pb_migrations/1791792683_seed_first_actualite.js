@@ -18,7 +18,7 @@ migrate(
     const record = new Record(collection, {
       titre: "Glownyo est lancé ! 🎉",
       texte:
-        "Clients : réservez gratuitement votre prestation beauté. Pour le moment, le paiement se fait directement auprès de la prestataire. Prestataires : l'inscription est gratuite pendant toute la période de lancement. Rejoignez-nous !",
+        "Envie d'une prestation beauté ? Réservez gratuitement en quelques clics. Pour le moment, le paiement se fait directement sur place, au moment de votre rendez-vous. Vous êtes professionnel·le de la beauté ou du bien-être ? L'inscription est gratuite pendant toute la période de lancement. Rejoignez-nous !",
       date_publication: new Date().toISOString(),
       statut: "publie",
     });
