@@ -11,14 +11,22 @@ onRecordCreateRequest((e) => {
   // whole request fails instead of just skipping the schedule check.
   const BOOKING_DAY_CODES = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
-  const status = e.record.get("payment_status");
-  if (!status) {
+  // Security: the `bookings` createRule is open (guests book without an
+  // account), but that also meant a plain public POST could create a
+  // booking already marked payment_status="paid" — skipping FedaPay
+  // entirely — or set `owner` to any other user's id, planting a fake
+  // reservation in a stranger's "Mes rendez-vous". Both confirmed during
+  // the 2026-10 security audit. These fields are now force-reset on every
+  // create regardless of what the client sent — payment/email/booking
+  // status always start at their real default, fedapay_transaction_id
+  // can't be forged, and `owner` can only ever be the actual signed-in
+  // visitor (or unset, for a guest booking) — never an arbitrary id.
+  if (!e.hasSuperuserAuth()) {
     e.record.set("payment_status", "pending");
-  }
-  // email_status is updated by the confirmation-email hook after the record
-  // is saved; default to "pending" until then.
-  if (!e.record.get("email_status")) {
     e.record.set("email_status", "pending");
+    e.record.set("booking_status", "pending");
+    e.record.set("fedapay_transaction_id", "");
+    e.record.set("owner", e.auth ? e.auth.id : "");
   }
 
   // Defense in depth: the booking form already blocks a request outside the
