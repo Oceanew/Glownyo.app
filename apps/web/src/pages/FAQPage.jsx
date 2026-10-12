@@ -10,7 +10,7 @@ const CLIENT_FAQ = [
   },
   {
     q: 'Est-ce que c\'est pour les hommes aussi ?',
-    a: 'Oui ! Glownyo est pour elle comme pour lui. Barbiers et soins homme ont toute leur place.',
+    a: 'Oui ! Glownyo est fait pour tout le monde. Barbiers et soins homme ont toute leur place.',
   },
   {
     q: 'Est-ce que la réservation est payante ?',
@@ -18,11 +18,11 @@ const CLIENT_FAQ = [
   },
   {
     q: 'Comment je paie ma prestation ?',
-    a: "Pour le moment, le paiement se fait directement sur place auprès de la prestataire. Le paiement par Mobile Money (MTN, Moov) arrive bientôt.",
+    a: "Pour le moment, le paiement se fait directement sur place auprès de la personne prestataire. Le paiement par Mobile Money (MTN, Moov) arrive bientôt.",
   },
   {
     q: 'Comment je sais que mon rendez-vous est confirmé ?',
-    a: 'Vous recevez une confirmation après votre réservation. La prestataire peut aussi vous contacter sur WhatsApp.',
+    a: 'Vous recevez une confirmation après votre réservation. La personne prestataire peut aussi vous contacter sur WhatsApp.',
   },
   {
     q: 'Je peux annuler mon rendez-vous ?',
@@ -30,14 +30,14 @@ const CLIENT_FAQ = [
   },
   {
     q: 'Les photos et vidéos de réalisations sont-elles authentiques ?',
-    a: "Oui. Chaque nouvelle photo ou vidéo publiée par une prestataire est vérifiée par l'équipe Glownyo avant de devenir visible sur le site. L'authenticité est une valeur fondamentale de Glownyo.",
+    a: "Oui. Chaque nouvelle photo ou vidéo publiée par une personne prestataire est vérifiée par l'équipe Glownyo avant de devenir visible sur le site. L'authenticité est une valeur fondamentale de Glownyo.",
   },
 ];
 
 const PROVIDER_FAQ = [
   {
     q: 'Qui peut s\'inscrire ?',
-    a: 'Tout professionnel de la beauté ou du bien-être au Bénin : coiffeuse, barbier, nail artiste, artiste henné, esthéticienne, maquilleuse…',
+    a: 'Toute personne exerçant un métier de la beauté ou du bien-être au Bénin : coiffure, barbier, nail art, henné, esthétique, maquillage…',
   },
   {
     q: 'Combien ça coûte ?',

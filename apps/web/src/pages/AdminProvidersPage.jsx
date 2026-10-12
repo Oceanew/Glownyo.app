@@ -81,9 +81,9 @@ const AdminProvidersPage = () => {
       const data = await res.json().catch(() => ({}));
       setPending((prev) => prev.filter((p) => p.id !== id));
       if (data.email_sent === true) {
-        setActionMsg({ type: 'success', text: "Demande validée. L'email d'activation a été envoyé au prestataire." });
+        setActionMsg({ type: 'success', text: "Demande validée. L'email d'activation a été envoyé à la personne prestataire." });
       } else {
-        setActionMsg({ type: 'warn', text: "Demande validée, mais l'email d'activation n'a pas pu être envoyé pour l'instant (service d'email indisponible). Le prestataire peut demander un nouveau lien de connexion." });
+        setActionMsg({ type: 'warn', text: "Demande validée, mais l'email d'activation n'a pas pu être envoyé pour l'instant (service d'email indisponible). La personne prestataire peut demander un nouveau lien de connexion." });
       }
       loadAll();
     } catch (err) {

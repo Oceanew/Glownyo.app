@@ -12,7 +12,7 @@ const SECTIONS = [
   { id: 'tarifs', title: '7. Tarifs et paiement' },
   { id: 'annulation', title: '8. Annulation, modification et absence' },
   { id: 'obligations-client', title: '9. Obligations du client' },
-  { id: 'obligations-prestataire', title: '10. Statut et obligations du prestataire' },
+  { id: 'obligations-prestataire', title: '10. Statut et obligations de la Prestataire' },
   { id: 'responsabilite', title: '11. Responsabilité' },
   { id: 'donnees', title: '12. Données personnelles' },
   { id: 'propriete', title: '13. Propriété intellectuelle' },
@@ -52,7 +52,7 @@ const TermsPage = () => {
           Conditions générales de vente
         </h1>
         <p className="mt-5 text-[#F5F0E6]/70 text-lg max-w-2xl leading-relaxed">
-          Applicables à toute réservation effectuée sur GlowNyo entre un client et une prestataire
+          Applicables à toute réservation effectuée sur GlowNyo entre une personne cliente et une personne prestataire
           beauté &amp; bien-être référencée sur la plateforme.
         </p>
         <p className="mt-3 text-sm text-[#F5F0E6]/45">Dernière mise à jour : 24 septembre 2026</p>
@@ -95,7 +95,7 @@ const TermsPage = () => {
             <Ul>
               <li><strong className="text-[#F5F0E6]">Plateforme / GlowNyo</strong> — le site glownyo.app et les services associés (annuaire de prestataires, formulaire de réservation, paiement en ligne).</li>
               <li><strong className="text-[#F5F0E6]">Client</strong> — toute personne qui consulte le Site ou effectue une réservation, avec ou sans compte.</li>
-              <li><strong className="text-[#F5F0E6]">Prestataire</strong> — la professionnelle indépendante (coiffure, henné, esthétique, manucure/pédicure, barbier, bien-être...) référencée sur GlowNyo, qui exécute la prestation réservée.</li>
+              <li><strong className="text-[#F5F0E6]">Prestataire</strong> — toute personne professionnelle indépendante (coiffure, henné, esthétique, manucure/pédicure, barbier, bien-être...) référencée sur GlowNyo, qui exécute la prestation réservée.</li>
               <li><strong className="text-[#F5F0E6]">Réservation</strong> — la demande de rendez-vous soumise via le formulaire de la page « Réservation ».</li>
               <li><strong className="text-[#F5F0E6]">Prestation</strong> — le service beauté ou bien-être exécuté par la Prestataire au bénéfice du Client.</li>
             </Ul>
@@ -192,7 +192,7 @@ const TermsPage = () => {
           </section>
 
           <section id="obligations-prestataire" className="scroll-mt-32 sm:scroll-mt-40">
-            <H2>10. Statut et obligations du prestataire</H2>
+            <H2>10. Statut et obligations de la Prestataire</H2>
             <P>
               Chaque Prestataire référencée sur GlowNyo est une professionnelle{' '}
               <strong className="text-[#F5F0E6]">indépendante</strong>, qui n'est ni salariée, ni mandataire,
