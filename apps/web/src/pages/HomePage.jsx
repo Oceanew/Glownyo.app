@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Star, MapPin, ShieldCheck, Smartphone, CalendarCheck, Sparkles, Rocket, Users, TrendingUp, CalendarClock, MessageCircle, Newspaper, CalendarDays } from 'lucide-react';
 import { PROVIDERS, SPECIALTIES, IMAGES, LOGO, CALENDLY_URL, teamWaLink } from '@/data/site';
 import { fetchPublishedNews, formatNewsDate } from '@/pages/NewsPage';
+import useSiteTexts from '@/lib/useSiteTexts';
 const fade = {
   hidden: {
     opacity: 0,
@@ -19,6 +20,7 @@ const fade = {
   }
 };
 const HomePage = () => {
+  const { t } = useSiteTexts();
   const [news, setNews] = useState([]);
 
   useEffect(() => {
@@ -50,18 +52,18 @@ const HomePage = () => {
         <div className="relative mx-auto max-w-[90rem] w-full px-5 sm:px-8 py-24">
           <motion.div initial="hidden" animate="show" variants={fade} className="max-w-2xl">
             <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl leading-[1.05] font-semibold">
-              Rayonne de l'intérieur,
+              {t('accueil_hero_titre_1', "Rayonne de l'intérieur,")}
               <br />
-              <span className="text-gold-gradient italic">brille de l'extérieur</span>
+              <span className="text-gold-gradient italic">{t('accueil_hero_titre_2', 'brille de l\'extérieur')}</span>
             </h1>
-            <p className="mt-6 text-lg text-[#F5F0E6]/75 leading-relaxed max-w-xl">La plateforme afro-moderne qui connecte les clients aux prestataires beauté &amp; bien-être de référence au Bénin et en Afrique. Réservez en quelques clics, payez en Mobile Money.</p>
+            <p className="mt-6 text-lg text-[#F5F0E6]/75 leading-relaxed max-w-xl">{t('accueil_hero_description', "La plateforme afro-moderne qui connecte les clients aux prestataires beauté & bien-être de référence au Bénin et en Afrique. Réservez en quelques clics, payez en Mobile Money.")}</p>
             <div className="mt-9 flex flex-wrap gap-4">
               <Link to="/reservation" className="group gold-gradient text-[#0A0A0A] font-semibold px-8 py-4 rounded-full flex items-center gap-2 hover:brightness-110 transition">
-                Réserver un rendez-vous
+                {t('accueil_hero_bouton_reserver', 'Réserver un rendez-vous')}
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link to="/prestataires" className="border border-[#C9922A]/40 text-[#F5F0E6] px-8 py-4 rounded-full hover:bg-[#C9922A]/10 transition">
-                Découvrir les prestataires
+                {t('accueil_hero_bouton_decouvrir', 'Découvrir les prestataires')}
               </Link>
             </div>
           </motion.div>
@@ -83,16 +85,16 @@ const HomePage = () => {
         <div className="grid md:grid-cols-3 gap-6">
           {[{
           icon: CalendarCheck,
-          title: 'Réservation instantanée',
-          desc: 'Choisissez votre prestataire, un créneau et confirmez en quelques clics.'
+          title: t('accueil_valeur1_titre', 'Réservation instantanée'),
+          desc: t('accueil_valeur1_description', 'Choisissez votre prestataire, un créneau et confirmez en quelques clics.')
         }, {
           icon: Smartphone,
-          title: 'Paiement Mobile Money',
-          desc: 'Réglez en toute simplicité avec FedaPay — MTN, Moov et cartes acceptées.'
+          title: t('accueil_valeur2_titre', 'Paiement Mobile Money'),
+          desc: t('accueil_valeur2_description', 'Réglez en toute simplicité avec FedaPay — MTN, Moov et cartes acceptées.')
         }, {
           icon: ShieldCheck,
-          title: 'Prestataires de confiance',
-          desc: 'Chaque personne prestataire est sélectionnée pour son savoir-faire et sa fiabilité.'
+          title: t('accueil_valeur3_titre', 'Prestataires de confiance'),
+          desc: t('accueil_valeur3_description', 'Chaque personne prestataire est sélectionnée pour son savoir-faire et sa fiabilité.')
         }].map((f, i) => <motion.div key={f.title} initial="hidden" whileInView="show" viewport={{
           once: true,
           margin: '-80px'
@@ -110,11 +112,11 @@ const HomePage = () => {
       <section className="mx-auto max-w-[90rem] px-5 sm:px-8 pb-24">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
           <div>
-            <span className="text-xs tracking-widest uppercase text-gold">Nos talents</span>
-            <h2 className="mt-3 font-display text-4xl sm:text-5xl font-semibold">Prestataires à la une</h2>
+            <span className="text-xs tracking-widest uppercase text-gold">{t('accueil_talents_label', 'Nos talents')}</span>
+            <h2 className="mt-3 font-display text-4xl sm:text-5xl font-semibold">{t('accueil_talents_titre', 'Prestataires à la une')}</h2>
           </div>
           <Link to="/prestataires" className="text-gold flex items-center gap-2 hover:gap-3 transition-all text-sm">
-            Voir toutes les prestataires <ArrowRight size={16} />
+            {t('accueil_talents_lien', 'Voir toutes les prestataires')} <ArrowRight size={16} />
           </Link>
         </div>
 
@@ -173,11 +175,11 @@ const HomePage = () => {
         <section className="mx-auto max-w-[90rem] px-5 sm:px-8 pb-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
-              <span className="text-xs tracking-widest uppercase text-gold">Du nouveau</span>
-              <h2 className="mt-3 font-display text-4xl sm:text-5xl font-semibold">Actualités</h2>
+              <span className="text-xs tracking-widest uppercase text-gold">{t('accueil_actualites_label', 'Du nouveau')}</span>
+              <h2 className="mt-3 font-display text-4xl sm:text-5xl font-semibold">{t('accueil_actualites_titre', 'Actualités')}</h2>
             </div>
             <Link to="/actualites" className="text-gold flex items-center gap-2 hover:gap-3 transition-all text-sm">
-              Voir toutes les actualités <ArrowRight size={16} />
+              {t('accueil_actualites_lien', 'Voir toutes les actualités')} <ArrowRight size={16} />
             </Link>
           </div>
 
@@ -223,30 +225,28 @@ const HomePage = () => {
             margin: '-80px'
           }} variants={fade}>
               <span className="inline-flex items-center gap-2 rounded-full border border-[#C9922A]/40 bg-[#C9922A]/10 px-4 py-1.5 text-xs tracking-widest uppercase text-gold">
-                <Sparkles size={14} /> Offre de lancement
+                <Sparkles size={14} /> {t('accueil_lancement_badge', 'Offre de lancement')}
               </span>
               <h2 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.05] font-semibold">
-                Inscrivez-vous <span className="text-gold-gradient italic">gratuitement</span> pendant le lancement
+                {t('accueil_lancement_titre', 'Inscrivez-vous gratuitement pendant le lancement')}
               </h2>
               <p className="mt-6 text-lg text-[#F5F0E6]/75 leading-relaxed max-w-xl">
-                GlowNyo ouvre ses portes aux prestataires beauté & bien-être d'Afrique. Profitez de
-                l'offre de lancement pour rejoindre la plateforme <span className="text-gold font-medium">sans aucun frais</span> —
-                places limitées, inscriptions clôturées à la fin du lancement.
+                {t('accueil_lancement_description', "GlowNyo ouvre ses portes aux prestataires beauté & bien-être d'Afrique. Profitez de l'offre de lancement pour rejoindre la plateforme sans aucun frais — places limitées, inscriptions clôturées à la fin du lancement.")}
               </p>
 
               <div className="mt-9 space-y-4">
                 {[{
                 icon: Rocket,
-                title: 'Visibilité immédiate',
-                desc: 'Votre profil devant des centaines de personnes clientes dès le premier jour.'
+                title: t('accueil_benefice1_titre', 'Visibilité immédiate'),
+                desc: t('accueil_benefice1_description', 'Votre profil devant des centaines de personnes clientes dès le premier jour.')
               }, {
                 icon: TrendingUp,
-                title: 'Zéro commission pendant le lancement',
-                desc: 'Gardez 100 % de vos revenus, sans frais cachés.'
+                title: t('accueil_benefice2_titre', 'Zéro commission pendant le lancement'),
+                desc: t('accueil_benefice2_description', 'Gardez 100 % de vos revenus, sans frais cachés.')
               }, {
                 icon: Users,
-                title: 'Réservations simplifiées',
-                desc: 'Un agenda en ligne, un paiement Mobile Money intégré, zéro paperasse.'
+                title: t('accueil_benefice3_titre', 'Réservations simplifiées'),
+                desc: t('accueil_benefice3_description', 'Un agenda en ligne, un paiement Mobile Money intégré, zéro paperasse.')
               }].map(b => <div key={b.title} className="flex items-start gap-4">
                     <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#C9922A]/30 bg-[#C9922A]/10">
                       <b.icon className="text-gold" size={20} strokeWidth={1.5} />
@@ -260,18 +260,18 @@ const HomePage = () => {
 
               <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <Link to="/devenir-prestataire" className="group inline-flex items-center gap-2 gold-gradient text-[#0A0A0A] font-semibold px-9 py-4 rounded-full hover:brightness-110 transition shadow-lg shadow-[#C9922A]/20">
-                  Je m'inscris gratuitement
+                  {t('accueil_lancement_bouton_inscription', "Je m'inscris gratuitement")}
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 border border-[#C9922A]/40 text-[#F5F0E6] font-semibold px-7 py-4 rounded-full hover:bg-[#C9922A]/10 transition">
                   <CalendarClock size={18} className="text-gold" />
-                  Réserver un appel avec GlowNyo
+                  {t('accueil_lancement_bouton_appel', 'Réserver un appel avec GlowNyo')}
                 </a>
                 <a href={teamWaLink("Bonjour l'équipe GlowNyo, je suis prestataire et souhaite vous contacter.")} target="_blank" rel="noreferrer" className="group inline-flex items-center gap-2 bg-[#25D366] text-white font-semibold px-7 py-4 rounded-full hover:brightness-105 active:scale-95 transition">
                   <MessageCircle size={18} />
-                  Contacter l'équipe sur WhatsApp
+                  {t('accueil_lancement_bouton_whatsapp', "Contacter l'équipe sur WhatsApp")}
                 </a>
-                <span className="text-xs text-[#F5F0E6]/50">Inscription en 2 minutes · Sans engagement</span>
+                <span className="text-xs text-[#F5F0E6]/50">{t('accueil_lancement_mention', 'Inscription en 2 minutes · Sans engagement')}</span>
               </div>
             </motion.div>
 
@@ -282,28 +282,27 @@ const HomePage = () => {
             delay: 0.15
           }} className="relative rounded-3xl border border-[#C9922A]/25 bg-[#0F0F0F]/80 backdrop-blur p-8 sm:p-10">
               <div className="absolute -top-3 left-8 rounded-full bg-[#C9922A] px-4 py-1 text-xs font-semibold text-[#0A0A0A] tracking-wide">
-                Offre limitée
+                {t('accueil_lancement_badge_carte', 'Offre limitée')}
               </div>
               <p className="font-display text-2xl italic text-[#F5F0E6]/85 leading-snug">
-                « Rejoindre GlowNyo, c'est donner à mon talent la visibilité qu'il mérite —
-                et toucher une clientèle que je n'aurais jamais atteinte seule. »
+                {t('accueil_lancement_citation', "« Rejoindre GlowNyo, c'est donner à mon talent la visibilité qu'il mérite — et toucher une clientèle que je n'aurais jamais atteinte seule. »")}
               </p>
               <div className="mt-6 grid grid-cols-3 gap-4 border-t border-[#C9922A]/15 pt-6">
                 <div>
-                  <p className="font-display text-3xl text-gold font-semibold">0 €</p>
-                  <p className="mt-1 text-xs text-[#F5F0E6]/55">Frais d'inscription</p>
+                  <p className="font-display text-3xl text-gold font-semibold">{t('accueil_lancement_stat1_valeur', '0 €')}</p>
+                  <p className="mt-1 text-xs text-[#F5F0E6]/55">{t('accueil_lancement_stat1_label', "Frais d'inscription")}</p>
                 </div>
                 <div>
-                  <p className="font-display text-3xl text-gold font-semibold">100 %</p>
-                  <p className="mt-1 text-xs text-[#F5F0E6]/55">De vos revenus</p>
+                  <p className="font-display text-3xl text-gold font-semibold">{t('accueil_lancement_stat2_valeur', '100 %')}</p>
+                  <p className="mt-1 text-xs text-[#F5F0E6]/55">{t('accueil_lancement_stat2_label', 'De vos revenus')}</p>
                 </div>
                 <div>
-                  <p className="font-display text-3xl text-gold font-semibold">2 min</p>
-                  <p className="mt-1 text-xs text-[#F5F0E6]/55">Pour s'inscrire</p>
+                  <p className="font-display text-3xl text-gold font-semibold">{t('accueil_lancement_stat3_valeur', '2 min')}</p>
+                  <p className="mt-1 text-xs text-[#F5F0E6]/55">{t('accueil_lancement_stat3_label', "Pour s'inscrire")}</p>
                 </div>
               </div>
               <Link to="/devenir-prestataire" className="mt-8 flex items-center justify-center gap-2 w-full rounded-full border border-[#C9922A]/40 text-gold px-6 py-3.5 hover:bg-[#C9922A]/10 transition font-medium">
-                Ouvrir le formulaire d'inscription <ArrowRight size={16} />
+                {t('accueil_lancement_bouton_formulaire', "Ouvrir le formulaire d'inscription")} <ArrowRight size={16} />
               </Link>
             </motion.div>
           </div>
@@ -316,13 +315,13 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-[#0A0A0A]/80" />
         <div className="relative mx-auto max-w-[56rem] px-5 sm:px-8 py-28 text-center">
           <h2 className="font-display text-4xl sm:text-5xl font-semibold leading-tight">
-            Votre moment beauté commence ici
+            {t('accueil_cta_titre', 'Votre moment beauté commence ici')}
           </h2>
           <p className="mt-5 text-[#F5F0E6]/75 text-lg max-w-xl mx-auto">
-            Rejoignez la communauté GlowNyo et vivez une expérience beauté afro-moderne, où que vous soyez.
+            {t('accueil_cta_description', 'Rejoignez la communauté GlowNyo et vivez une expérience beauté afro-moderne, où que vous soyez.')}
           </p>
           <Link to="/reservation" className="mt-9 inline-flex items-center gap-2 gold-gradient text-[#0A0A0A] font-semibold px-9 py-4 rounded-full hover:brightness-110 transition">
-            Prendre rendez-vous <ArrowRight size={18} />
+            {t('accueil_cta_bouton', 'Prendre rendez-vous')} <ArrowRight size={18} />
           </Link>
         </div>
       </section>

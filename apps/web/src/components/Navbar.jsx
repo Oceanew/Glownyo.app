@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, UserCircle, Scissors, ShieldCheck, ChevronDown, LayoutDashboard, CalendarDays, Users, Star, Newspaper, LogOut } from 'lucide-react';
+import { Menu, X, UserCircle, Scissors, ShieldCheck, ChevronDown, LayoutDashboard, CalendarDays, Users, Star, Newspaper, LogOut, FileText } from 'lucide-react';
 import { LOGO } from '@/data/site';
 import { useAuth } from '@/contexts/AuthContext';
 import SpaceSwitcher from '@/components/SpaceSwitcher';
+import useSiteTexts from '@/lib/useSiteTexts';
 
 const links = [
   { to: '/', label: 'Accueil' },
@@ -23,6 +24,7 @@ const Navbar = () => {
   const accountMenuRef = useRef(null);
   const location = useLocation();
   const { isAuthed, isProvider, isDualRole, isAdmin, logout } = useAuth();
+  const { t } = useSiteTexts();
 
   useEffect(() => setOpen(false), [location.pathname]);
   useEffect(() => setAccountOpen(false), [location.pathname]);
@@ -126,6 +128,9 @@ const Navbar = () => {
                           <Link to="/admin/actualites" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
                             <Newspaper size={15} className="text-gold" /> Actualités
                           </Link>
+                          <Link to="/admin/textes" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                            <FileText size={15} className="text-gold" /> Textes du site
+                          </Link>
                         </>
                       )}
                       <Link to="/mon-compte" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
@@ -155,7 +160,7 @@ const Navbar = () => {
             to="/reservation"
             className="gold-gradient text-[#0A0A0A] font-semibold text-sm px-6 py-2.5 rounded-full whitespace-nowrap leading-none hover:brightness-110 transition"
           >
-            Réserver
+            {t('global_bouton_reserver', 'Réserver')}
           </Link>
         </div>
 
@@ -190,7 +195,7 @@ const Navbar = () => {
             to="/reservation"
             className="mt-5 block text-center gold-gradient text-[#0A0A0A] font-semibold px-6 py-3.5 rounded-full"
           >
-            Réserver un rendez-vous
+            {t('global_bouton_reserver_mobile', 'Réserver un rendez-vous')}
           </Link>
           {!isAuthed ? (
             <Link
@@ -250,6 +255,9 @@ const Navbar = () => {
                   </Link>
                   <Link to="/admin/actualites" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
                     <Newspaper size={15} className="text-gold" /> Actualités
+                  </Link>
+                  <Link to="/admin/textes" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                    <FileText size={15} className="text-gold" /> Textes du site
                   </Link>
                 </div>
               )}
