@@ -27,6 +27,7 @@ import NewsDetailPage from './pages/NewsDetailPage';
 import AdminNewsPage from './pages/AdminNewsPage';
 import AdminSiteTextsPage from './pages/AdminSiteTextsPage';
 import AdminProviderOrderPage from './pages/AdminProviderOrderPage';
+import AdminReferralsPage from './pages/AdminReferralsPage';
 
 function App() {
     return (
@@ -51,6 +52,7 @@ function App() {
                         <Route path="/admin/actualites" element={<AdminRoute><AdminNewsPage /></AdminRoute>} />
                         <Route path="/admin/textes" element={<AdminRoute><AdminSiteTextsPage /></AdminRoute>} />
                         <Route path="/admin/ordre-prestataires" element={<AdminRoute><AdminProviderOrderPage /></AdminRoute>} />
+                        <Route path="/admin/parrainages" element={<AdminRoute><AdminReferralsPage /></AdminRoute>} />
                         <Route path="/devenir-prestataire" element={<ProviderSignupPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/cgv" element={<TermsPage />} />

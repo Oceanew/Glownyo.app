@@ -18,6 +18,7 @@ const ProviderSignupPage = () => {
     location: '',
     instagram: '',
     bio: '',
+    parrain: '',
   });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -80,6 +81,7 @@ const ProviderSignupPage = () => {
           location: form.location.trim(),
           instagram: form.instagram.trim(),
           bio: form.bio.trim(),
+          parrain: form.parrain.trim(),
         }),
       });
       if (!res.ok) throw new Error('request_failed');
@@ -287,6 +289,16 @@ const ProviderSignupPage = () => {
             rows={4}
             placeholder="Parlez-nous de vous, votre expérience, et indiquez vos disponibilités (jours et horaires)…"
             className={`${inputCls} resize-none`}
+          />
+        </label>
+
+        <label className="flex flex-col gap-2">
+          <span className="text-sm text-[#F5F0E6]/70">Qui vous a parlé de Glownyo ?</span>
+          <input
+            value={form.parrain}
+            onChange={set('parrain')}
+            placeholder="Nom ou nom de salon de la personne (facultatif)"
+            className={inputCls}
           />
         </label>
 
