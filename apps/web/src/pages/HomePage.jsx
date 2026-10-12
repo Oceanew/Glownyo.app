@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Star, MapPin, ShieldCheck, Smartphone, CalendarCheck, Sparkles, Rocket, Users, TrendingUp, CalendarClock, MessageCircle } from 'lucide-react';
+import { ArrowRight, Star, MapPin, ShieldCheck, Smartphone, CalendarCheck, Sparkles, Rocket, Users, TrendingUp, CalendarClock, MessageCircle, Newspaper, CalendarDays } from 'lucide-react';
 import { PROVIDERS, SPECIALTIES, IMAGES, LOGO, CALENDLY_URL, teamWaLink } from '@/data/site';
+import { fetchPublishedNews, formatNewsDate } from '@/pages/NewsPage';
 const fade = {
   hidden: {
     opacity: 0,
@@ -17,6 +19,20 @@ const fade = {
   }
 };
 const HomePage = () => {
+  const [news, setNews] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    fetchPublishedNews(2)
+      .then((res) => {
+        if (active) setNews(res.items);
+      })
+      .catch((err) => console.error('failed to load news preview', err));
+    return () => {
+      active = false;
+    };
+  }, []);
+
   return <div className="pt-24 sm:pt-28">
       {/* LOGO */}
       <div className="flex justify-center pt-10 sm:pt-14 pb-2 bg-[#0A0A0A]">
@@ -150,6 +166,49 @@ const HomePage = () => {
             </motion.div>)}
         </div>
       </section>
+
+      {/* NEWS PREVIEW — only shown once at least one article has loaded, so
+          the section never flashes empty before the fetch resolves. */}
+      {news.length > 0 && (
+        <section className="mx-auto max-w-[90rem] px-5 sm:px-8 pb-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+            <div>
+              <span className="text-xs tracking-widest uppercase text-gold">Du nouveau</span>
+              <h2 className="mt-3 font-display text-4xl sm:text-5xl font-semibold">Actualités</h2>
+            </div>
+            <Link to="/actualites" className="text-gold flex items-center gap-2 hover:gap-3 transition-all text-sm">
+              Voir toutes les actualités <ArrowRight size={16} />
+            </Link>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            {news.map((item, i) => (
+              <motion.div
+                key={item.id}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: '-60px' }}
+                variants={fade}
+                transition={{ delay: i * 0.1 }}
+              >
+                <Link
+                  to={`/actualites/${item.id}`}
+                  className="group block rounded-2xl border border-[#C9922A]/15 bg-[#0F0F0F] p-7 hover:border-[#C9922A]/45 transition h-full"
+                >
+                  <p className="flex items-center gap-1.5 text-xs text-[#F5F0E6]/45">
+                    <CalendarDays size={13} /> {formatNewsDate(item.date_publication)}
+                  </p>
+                  <h3 className="mt-2.5 font-display text-xl font-semibold leading-snug">{item.titre}</h3>
+                  <p className="mt-2.5 text-sm text-[#F5F0E6]/65 leading-relaxed line-clamp-2">{item.texte}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm text-gold group-hover:gap-2.5 transition-all">
+                    <Newspaper size={14} /> Lire la suite
+                  </span>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* PROVIDER SIGN-UP */}
       <section className="relative overflow-hidden border-y border-[#C9922A]/20 bg-gradient-to-b from-[#0F0B05] to-[#0A0A0A]">

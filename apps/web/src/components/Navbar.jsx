@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, UserCircle, Scissors, ShieldCheck, ChevronDown, LayoutDashboard, CalendarDays, Users, Star, LogOut } from 'lucide-react';
+import { Menu, X, UserCircle, Scissors, ShieldCheck, ChevronDown, LayoutDashboard, CalendarDays, Users, Star, Newspaper, LogOut } from 'lucide-react';
 import { LOGO } from '@/data/site';
 import { useAuth } from '@/contexts/AuthContext';
 import SpaceSwitcher from '@/components/SpaceSwitcher';
@@ -10,6 +10,7 @@ const links = [
   { to: '/prestataires', label: 'Prestataires' },
   { to: '/reservation', label: 'Réservation' },
   { to: '/partenaires', label: 'Partenaires' },
+  { to: '/actualites', label: 'Actualités' },
   { to: '/a-propos', label: 'À propos' },
   { to: '/faq', label: 'FAQ' },
   { to: '/contact', label: 'Contact' },
@@ -121,6 +122,9 @@ const Navbar = () => {
                           </Link>
                           <Link to="/admin/avis" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
                             <Star size={15} className="text-gold" /> Avis clients
+                          </Link>
+                          <Link to="/admin/actualites" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                            <Newspaper size={15} className="text-gold" /> Actualités
                           </Link>
                         </>
                       )}
@@ -243,6 +247,9 @@ const Navbar = () => {
                   </Link>
                   <Link to="/admin/avis" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
                     <Star size={15} className="text-gold" /> Avis clients
+                  </Link>
+                  <Link to="/admin/actualites" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#F5F0E6]/85 hover:bg-[#C9922A]/10 hover:text-gold transition">
+                    <Newspaper size={15} className="text-gold" /> Actualités
                   </Link>
                 </div>
               )}
