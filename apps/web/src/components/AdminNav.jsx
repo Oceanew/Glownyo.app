@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, CalendarDays, Users, RefreshCw, Star, Newspaper, FileText } from 'lucide-react';
+import { LayoutDashboard, CalendarDays, Users, RefreshCw, Star, Newspaper, FileText, ArrowUpDown } from 'lucide-react';
 
 // Shared sub-navigation for the GlowNyo admin space. Renders the three admin
 // rubrics (Tableau de bord, Réservations, Demandes prestataires) plus a
@@ -87,6 +87,18 @@ const AdminNav = ({ onRefresh, refreshing, title, subtitle }) => (
         }
       >
         <FileText size={16} /> Textes du site
+      </NavLink>
+      <NavLink
+        to="/admin/ordre-prestataires"
+        className={({ isActive }) =>
+          `inline-flex items-center gap-2 border px-4 py-2.5 rounded-full transition text-sm ${
+            isActive
+              ? 'border-[#C9922A] text-gold bg-[#C9922A]/10'
+              : 'border-[#C9922A]/30 text-[#F5F0E6]/80 hover:bg-[#C9922A]/10'
+          }`
+        }
+      >
+        <ArrowUpDown size={16} /> Ordre des prestataires
       </NavLink>
       {onRefresh && (
         <button

@@ -71,6 +71,7 @@ const mapDbProvider = (p) => {
     availability: p.availability || '',
     availabilitySchedule: Array.isArray(p.availability_schedule) ? p.availability_schedule : null,
     startingPrice: p.starting_price_override || null,
+    order: typeof p.ordre_affichage === 'number' ? p.ordre_affichage : Number.MAX_SAFE_INTEGER,
     avatarShape: p.avatar_shape || undefined,
     rating: p.rating || null,
     reviews: p.review_count || 0,
@@ -122,10 +123,17 @@ const applyRealRatings = (list, ratingsByName) =>
     return p;
   });
 
-// Returns the merged list of public providers: the seeded static providers
+// A provider's sort key for the display order Oceane sets from her admin
+// space: DB providers carry it as `order` (mapped from ordre_affichage
+// above), the one remaining static entry carries it as `ordreAffichage`
+// directly on its data/site.js object.
+const orderOf = (p) =>
+  typeof p.order === 'number' ? p.order : typeof p.ordreAffichage === 'number' ? p.ordreAffichage : Number.MAX_SAFE_INTEGER;
+
+// Returns the merged list of public providers — the seeded static provider
 // plus every provider validated by the GlowNyo team (fetched from the
-// Express `/providers/public` route). DB providers are appended after the
-// seeded ones. `loading` is true only during the initial fetch.
+// `/providers/public` route) — sorted by the display order Oceane chose
+// from her admin space. `loading` is true only during the initial fetch.
 export function usePublicProviders() {
   const [providers, setProviders] = useState(PROVIDERS);
   const [loading, setLoading] = useState(true);
@@ -146,7 +154,9 @@ export function usePublicProviders() {
         // static one (shouldn't happen, but be safe).
         const staticSlugs = new Set(PROVIDERS.map((p) => p.slug));
         const extra = dbProviders.filter((p) => !staticSlugs.has(p.slug));
-        setProviders(applyRealRatings([...PROVIDERS, ...extra], ratingsByName));
+        const merged = applyRealRatings([...PROVIDERS, ...extra], ratingsByName);
+        merged.sort((a, b) => orderOf(a) - orderOf(b));
+        setProviders(merged);
       } catch (err) {
         // Fail gracefully — the static providers still render.
         console.error('failed to load public providers', err);
