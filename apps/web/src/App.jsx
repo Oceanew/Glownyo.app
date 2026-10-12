@@ -22,6 +22,9 @@ import AccountPage from './pages/AccountPage';
 import ProviderSpacePage from './pages/ProviderSpacePage';
 import TermsPage from './pages/TermsPage';
 import FAQPage from './pages/FAQPage';
+import NewsPage from './pages/NewsPage';
+import NewsDetailPage from './pages/NewsDetailPage';
+import AdminNewsPage from './pages/AdminNewsPage';
 
 function App() {
     return (
@@ -37,10 +40,13 @@ function App() {
                         <Route path="/a-propos" element={<AboutPage />} />
                         <Route path="/faq" element={<FAQPage />} />
                         <Route path="/partenaires" element={<PartnersPage />} />
+                        <Route path="/actualites" element={<NewsPage />} />
+                        <Route path="/actualites/:id" element={<NewsDetailPage />} />
                         <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
                         <Route path="/admin/reservations" element={<AdminRoute><AdminBookingsPage /></AdminRoute>} />
                         <Route path="/admin/prestataires" element={<AdminRoute><AdminProvidersPage /></AdminRoute>} />
                         <Route path="/admin/avis" element={<AdminRoute><AdminReviewsPage /></AdminRoute>} />
+                        <Route path="/admin/actualites" element={<AdminRoute><AdminNewsPage /></AdminRoute>} />
                         <Route path="/devenir-prestataire" element={<ProviderSignupPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/cgv" element={<TermsPage />} />
