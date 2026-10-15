@@ -9,6 +9,7 @@ import { invalidateSiteTextsCache } from '@/lib/useSiteTexts';
 
 const PAGES = [
   { value: 'accueil', label: 'Accueil' },
+  { value: 'reservation', label: 'Réservation' },
   { value: 'a-propos', label: 'À propos' },
   { value: 'faq', label: 'FAQ' },
   { value: 'contact', label: 'Contact' },

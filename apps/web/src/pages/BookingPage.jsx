@@ -6,6 +6,7 @@ import pb from '@/lib/pocketbaseClient';
 import apiServerClient from '@/lib/apiServerClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePublicProviders } from '@/lib/usePublicProviders';
+import useSiteTexts from '@/lib/useSiteTexts';
 
 // JS Date#getDay(): 0 = Sunday ... 6 = Saturday.
 const DAY_CODES = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
@@ -33,6 +34,7 @@ const getScheduleIssue = (provider, date, time) => {
 };
 
 const BookingPage = () => {
+  const { t } = useSiteTexts();
   const [params] = useSearchParams();
   const preset = params.get('prestataire') || '';
   const [form, setForm] = useState({
@@ -306,13 +308,12 @@ const BookingPage = () => {
   };
   return <div className="pt-32 pb-24 mx-auto max-w-[72rem] px-5 sm:px-8">
       <div className="max-w-2xl">
-        <span className="text-xs tracking-widest uppercase text-gold">Réservation</span>
+        <span className="text-xs tracking-widest uppercase text-gold">{t('reservation_eyebrow', 'Réservation')}</span>
         <h1 className="mt-3 font-display text-4xl sm:text-6xl font-semibold leading-tight">
-          Prenez rendez-vous
+          {t('reservation_titre', 'Prenez rendez-vous')}
         </h1>
         <p className="mt-5 text-[#F5F0E6]/70 text-lg">
-          Renseignez vos préférences ci-dessous. Votre demande est enregistrée automatiquement et transmise
-          à votre prestataire. Réglez en toute sécurité par Mobile Money grâce à FedaPay.
+          {t('reservation_description', "Renseignez vos préférences ci-dessous. Votre demande est enregistrée automatiquement et transmise à votre prestataire. Réglez en toute sécurité par Mobile Money grâce à FedaPay.")}
         </p>
       </div>
 
@@ -323,11 +324,9 @@ const BookingPage = () => {
               <div className="mx-auto w-16 h-16 rounded-full gold-gradient flex items-center justify-center">
                 <Check size={30} className="text-[#0A0A0A]" strokeWidth={3} />
               </div>
-              <h2 className="mt-6 font-display text-2xl font-semibold">Demande enregistrée</h2>
+              <h2 className="mt-6 font-display text-2xl font-semibold">{t('reservation_confirmation_titre', 'Demande enregistrée')}</h2>
               <p className="mt-3 text-[#F5F0E6]/65 max-w-md mx-auto">
-                Votre demande a bien été enregistrée et transmise à votre prestataire ainsi qu'à l'équipe
-                GlowNyo. Votre prestataire vous contactera rapidement pour confirmer votre créneau. Vous
-                pouvez aussi confirmer les détails via WhatsApp.
+                {t('reservation_confirmation_description', "Votre demande a bien été enregistrée et transmise à votre prestataire ainsi qu'à l'équipe GlowNyo. Votre prestataire vous contactera rapidement pour confirmer votre créneau. Vous pouvez aussi confirmer les détails via WhatsApp.")}
               </p>
 
               <div className="mt-5 mx-auto max-w-md">
@@ -359,11 +358,10 @@ const BookingPage = () => {
               <div className="mt-8 mx-auto max-w-md rounded-2xl border border-[#C9922A]/25 bg-gradient-to-b from-[#C9922A]/[0.06] to-transparent p-6 text-left">
                 <div className="flex items-center gap-2">
                   <ShieldCheck size={18} className="text-gold shrink-0" />
-                  <h3 className="font-display text-lg font-semibold">Réglez votre acompte en toute sécurité</h3>
+                  <h3 className="font-display text-lg font-semibold">{t('reservation_acompte_titre', 'Réglez votre acompte en toute sécurité')}</h3>
                 </div>
                 <p className="mt-2 text-sm text-[#F5F0E6]/60">
-                  Le paiement est traité par FedaPay, notre partenaire de paiement sécurisé agréé pour
-                  l'Afrique de l'Ouest.
+                  {t('reservation_acompte_description', "Le paiement est traité par FedaPay, notre partenaire de paiement sécurisé agréé pour l'Afrique de l'Ouest.")}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C9922A]/20 bg-[#0A0A0A] px-3 py-1.5 text-xs text-[#F5F0E6]/80">
@@ -405,15 +403,15 @@ const BookingPage = () => {
                   </p>}
 
                 <p className="mt-4 flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-[#F5F0E6]/35">
-                  <ShieldCheck size={12} /> Paiement chiffré et sécurisé par FedaPay
+                  <ShieldCheck size={12} /> {t('reservation_acompte_mention_securite', 'Paiement chiffré et sécurisé par FedaPay')}
                 </p>
               </div>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
                 <a href={waLink(buildMessage())} target="_blank" rel="noreferrer" className="bg-[#25D366] text-white font-semibold px-6 py-3.5 rounded-full flex items-center justify-center gap-2 hover:brightness-105 transition">
-                  <MessageCircle size={18} /> Confirmer sur WhatsApp
+                  <MessageCircle size={18} /> {t('reservation_bouton_whatsapp_confirmer', 'Confirmer sur WhatsApp')}
                 </a>
-                {WHATSAPP_NUMBER && <a href={waLink('Bonjour GlowNyo, je souhaite contacter le service client au sujet de ma réservation.')} target="_blank" rel="noreferrer" className="border border-[#25D366]/50 text-[#25D366] px-6 py-3.5 rounded-full flex items-center justify-center gap-2 hover:bg-[#25D366]/10 transition"><MessageCircle size={18} /> Contacter l'équipe de GlowNyo</a>}
+                {WHATSAPP_NUMBER && <a href={waLink('Bonjour GlowNyo, je souhaite contacter le service client au sujet de ma réservation.')} target="_blank" rel="noreferrer" className="border border-[#25D366]/50 text-[#25D366] px-6 py-3.5 rounded-full flex items-center justify-center gap-2 hover:bg-[#25D366]/10 transition"><MessageCircle size={18} /> {t('reservation_bouton_whatsapp_equipe', "Contacter l'équipe de GlowNyo")}</a>}
               </div>
 
               {/* Optional account creation — lets the client view & manage her
@@ -423,24 +421,23 @@ const BookingPage = () => {
                   <>
                     <div className="flex items-center gap-2">
                       <CalendarClock size={18} className="text-gold shrink-0" />
-                      <h3 className="font-display text-lg font-semibold">Votre espace client est prêt</h3>
+                      <h3 className="font-display text-lg font-semibold">{t('reservation_espace_pret_titre', 'Votre espace client est prêt')}</h3>
                     </div>
                     <p className="mt-2 text-sm text-[#F5F0E6]/60">
-                      Retrouvez et gérez tous vos rendez-vous GlowNyo depuis votre espace personnel.
+                      {t('reservation_espace_pret_description', 'Retrouvez et gérez tous vos rendez-vous GlowNyo depuis votre espace personnel.')}
                     </p>
                     <Link to="/mes-rendez-vous" className="mt-4 inline-flex items-center gap-2 gold-gradient text-[#0A0A0A] font-semibold px-5 py-2.5 rounded-full hover:brightness-110 transition">
-                      <CalendarClock size={16} /> Voir mes rendez-vous
+                      <CalendarClock size={16} /> {t('reservation_bouton_voir_rdv', 'Voir mes rendez-vous')}
                     </Link>
                   </>
                 ) : (
                   <>
                     <div className="flex items-center gap-2">
                       <UserPlus size={18} className="text-gold shrink-0" />
-                      <h3 className="font-display text-lg font-semibold">Créer un compte (facultatif)</h3>
+                      <h3 className="font-display text-lg font-semibold">{t('reservation_creer_compte_titre', 'Créer un compte (facultatif)')}</h3>
                     </div>
                     <p className="mt-2 text-sm text-[#F5F0E6]/60">
-                      Pour consulter et gérer vos rendez-vous à tout moment. La réservation reste
-                      possible <strong className="text-[#F5F0E6]/80">sans compte</strong>.
+                      {t('reservation_creer_compte_description', 'Pour consulter et gérer vos rendez-vous à tout moment. La réservation reste possible sans compte.')}
                     </p>
                     <div className="mt-4 flex flex-col gap-3">
                       <input
@@ -477,11 +474,11 @@ const BookingPage = () => {
                         {account.status === 'loading' ? (
                           <><Loader2 size={16} className="animate-spin" /> Création en cours...</>
                         ) : (
-                          <><UserPlus size={16} /> Créer mon compte</>
+                          <><UserPlus size={16} /> {t('reservation_bouton_creer_compte', 'Créer mon compte')}</>
                         )}
                       </button>
                       <Link to="/connexion" className="text-center text-sm text-[#F5F0E6]/55 hover:text-gold transition inline-flex items-center justify-center gap-1.5">
-                        <LogIn size={14} /> J'ai déjà un compte
+                        <LogIn size={14} /> {t('reservation_lien_deja_compte', "J'ai déjà un compte")}
                       </Link>
                     </div>
                   </>
@@ -489,7 +486,7 @@ const BookingPage = () => {
               </div>
 
               <button onClick={() => { setSent(false); setBookingId(null); setTransactionId(null); setPaymentStatus('pending'); setEmailStatus('pending'); setEmailSending(false); setSlotError(''); setAccount({ status: 'idle', error: '', password: '' }); }} className="mt-6 text-sm text-[#F5F0E6]/50 hover:text-gold transition">
-                Modifier ma demande
+                {t('reservation_bouton_modifier', 'Modifier ma demande')}
               </button>
             </div> : <form onSubmit={onSubmit} className="grid sm:grid-cols-2 gap-5">
               <Field label="Nom complet" className="sm:col-span-2">
@@ -547,7 +544,7 @@ const BookingPage = () => {
                 {submitting ? <>
                     <Loader2 size={18} className="animate-spin" /> Envoi en cours...
                   </> : <>
-                    <CalendarCheck size={18} /> Envoyer ma demande
+                    <CalendarCheck size={18} /> {t('reservation_bouton_envoyer', 'Envoyer ma demande')}
                   </>}
               </button>
             </form>}
@@ -557,10 +554,10 @@ const BookingPage = () => {
         <aside className="space-y-4">
           <div className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6">
             <h3 className="font-display text-lg font-semibold flex items-center gap-2">
-              <ShieldCheck size={18} className="text-gold" /> Paiement sécurisé FedaPay
+              <ShieldCheck size={18} className="text-gold" /> {t('reservation_side_paiement_titre', 'Paiement sécurisé FedaPay')}
             </h3>
             <p className="mt-3 text-sm text-[#F5F0E6]/65 leading-relaxed">
-              Réglez vos prestations en toute sécurité une fois votre demande envoyée.
+              {t('reservation_side_paiement_description', 'Réglez vos prestations en toute sécurité une fois votre demande envoyée.')}
             </p>
             <div className="mt-4 flex flex-col gap-2">
               <span className="inline-flex items-center gap-2 text-sm text-[#F5F0E6]/75">
@@ -576,11 +573,10 @@ const BookingPage = () => {
           </div>
           <div className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6">
             <h3 className="font-display text-lg font-semibold flex items-center gap-2">
-              <CalendarCheck size={18} className="text-gold" /> Confirmation directe
+              <CalendarCheck size={18} className="text-gold" /> {t('reservation_side_confirmation_titre', 'Confirmation directe')}
             </h3>
             <p className="mt-3 text-sm text-[#F5F0E6]/65 leading-relaxed">
-              Votre demande est envoyée directement à votre prestataire, qui vous recontacte pour confirmer
-              votre créneau. Aucun agenda externe, tout se passe ici.
+              {t('reservation_side_confirmation_description', 'Votre demande est envoyée directement à votre prestataire, qui vous recontacte pour confirmer votre créneau. Aucun agenda externe, tout se passe ici.')}
             </p>
           </div>
           {chosen && <div className="rounded-3xl border border-[#C9922A]/30 bg-[#C9922A]/5 p-6">
