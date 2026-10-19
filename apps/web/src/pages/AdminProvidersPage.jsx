@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import {
   Check,
@@ -28,6 +28,18 @@ const AdminProvidersPage = () => {
   const [actingId, setActingId] = useState(null);
   const [actingGalleryKey, setActingGalleryKey] = useState(null);
   const [actionMsg, setActionMsg] = useState(null);
+  const [searchParams] = useSearchParams();
+  const highlightId = searchParams.get('highlight');
+  const highlightedRef = useRef(null);
+
+  // Scrolls to and briefly highlights the provider card a notification
+  // click pointed at (/admin/prestataires?highlight=<id>) — once the list
+  // has actually loaded, so the card exists in the DOM to scroll to.
+  useEffect(() => {
+    if (!highlightId || active.length === 0) return;
+    const el = highlightedRef.current;
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [highlightId, active]);
 
   const authHeaders = () => ({
     Authorization: pb.authStore.token || '',
@@ -413,7 +425,13 @@ const AdminProvidersPage = () => {
 
         <div className="mt-6 grid sm:grid-cols-2 gap-5">
           {active.map((p) => (
-            <div key={p.id} className="rounded-3xl border border-[#C9922A]/15 bg-[#0F0F0F] p-6">
+            <div
+              key={p.id}
+              ref={p.id === highlightId ? highlightedRef : null}
+              className={`rounded-3xl border bg-[#0F0F0F] p-6 transition ${
+                p.id === highlightId ? 'border-gold ring-2 ring-[#C9922A]/50' : 'border-[#C9922A]/15'
+              }`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <h3 className="font-display text-lg font-semibold truncate">{p.name || '—'}</h3>

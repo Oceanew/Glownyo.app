@@ -5,6 +5,7 @@ import { LOGO } from '@/data/site';
 import { useAuth } from '@/contexts/AuthContext';
 import SpaceSwitcher from '@/components/SpaceSwitcher';
 import useSiteTexts from '@/lib/useSiteTexts';
+import NotificationBell from '@/components/NotificationBell';
 
 const links = [
   { to: '/', label: 'Accueil' },
@@ -80,6 +81,7 @@ const Navbar = () => {
           {isAuthed ? (
             <>
               {isDualRole && <SpaceSwitcher variant="compact" />}
+              {isAdmin && <NotificationBell />}
               {/* Single account menu instead of one nav item per link: on
                   narrower desktop/tablet widths, a row of separate items
                   (Mes rendez-vous, Espace prestataire, Administration, Mon
@@ -238,6 +240,11 @@ const Navbar = () => {
                 >
                   <Scissors size={15} className="text-gold" /> Espace prestataire
                 </Link>
+              )}
+              {isAdmin && (
+                <div className="mt-3">
+                  <NotificationBell variant="mobile" />
+                </div>
               )}
               {isAdmin && (
                 <div className="mt-3 rounded-2xl border border-[#C9922A]/20 bg-[#0A0A0A] py-2">
