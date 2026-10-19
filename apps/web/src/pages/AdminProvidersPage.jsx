@@ -11,6 +11,7 @@ import {
   Mail,
   MessageCircle,
   Image as ImageIcon,
+  AlertTriangle,
 } from 'lucide-react';
 import AdminNav from '@/components/AdminNav';
 import apiServerClient from '@/lib/apiServerClient';
@@ -400,9 +401,15 @@ const AdminProvidersPage = () => {
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 px-3 py-1 text-xs font-semibold uppercase tracking-wide">
             {active.filter((p) => p.active).length} actifs
           </span>
+          {active.filter((p) => p.active && !p.profileComplete).length > 0 && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C9922A]/30 bg-[#C9922A]/10 text-gold px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+              <AlertTriangle size={12} /> {active.filter((p) => p.active && !p.profileComplete).length} profil(s) incomplet(s)
+            </span>
+          )}
         </div>
         <p className="mt-2 text-sm text-[#F5F0E6]/55">
           Activez ou désactivez un compte : un compte prestataire désactivé disparaît du site public et perd l'accès à son espace, sans suppression de compte.
+          Un compte actif dont le profil est incomplet (sans photo ou sans prestation) reste actif mais n'apparaît pas encore sur le site public — il s'affiche automatiquement dès que le profil est complété.
         </p>
 
         {active.length === 0 && !loading && (
@@ -427,7 +434,17 @@ const AdminProvidersPage = () => {
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F5F0E6]/15 bg-[#F5F0E6]/5 text-[#F5F0E6]/60 px-2.5 py-1 text-[11px] font-medium">
                       {p.accountType === 'standalone' ? 'Compte prestataire' : 'Compte client + prestataire'}
                     </span>
+                    {p.active && !p.profileComplete && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-[#C9922A]/30 bg-[#C9922A]/10 text-gold px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide">
+                        <AlertTriangle size={11} /> Profil incomplet
+                      </span>
+                    )}
                   </div>
+                  {p.active && !p.profileComplete && (
+                    <p className="mt-1.5 text-xs text-gold/80">
+                      Manque : {[p.missingPhoto && 'photo de profil', p.missingServices && 'au moins une prestation'].filter(Boolean).join(', ')}
+                    </p>
+                  )}
                 </div>
                 <button
                   onClick={() => toggleActive(p.id, !p.active)}

@@ -7,6 +7,14 @@
 //   - standalone provider account: role="provider" && validated=true
 //   - existing client granted provider access: provider_request_status="validated"
 // Only public-facing fields are exposed (no email/password/token/etc.).
+//
+// A validated account is also hidden from this list until its profile is
+// actually complete (a photo and at least one service) — the account stays
+// active and the provider keeps her own space, she just doesn't show up to
+// clients with a half-empty profile. This is computed live from the record
+// itself, not a stored flag, so the profile reappears automatically on the
+// very next request once she adds a photo/service — see /providers/active
+// for the admin-facing view of who's missing what.
 routerAdd("GET", "/providers/public", (e) => {
   try {
     const records = $app.findRecordsByFilter(
@@ -17,7 +25,23 @@ routerAdd("GET", "/providers/public", (e) => {
       0,
     );
 
-    const providers = records.map((r) => ({
+    const complete = records.filter((r) => {
+      const hasPhoto = !!(r.get("avatar") || r.get("avatar_url"));
+      // `services` is a JSONField — .get() on a record fetched this way
+      // returns a Go-backed byte-array wrapper, not a real JS array, so
+      // Array.isArray/.length on it silently lie. .string() + JSON.parse
+      // gives the actual structured value (same quirk as
+      // booking-defaults.pb.js's availability_schedule handling).
+      const rawServices = r.get("services");
+      const services =
+        rawServices && typeof rawServices.string === "function"
+          ? JSON.parse(rawServices.string() || "null")
+          : rawServices;
+      const hasServices = Array.isArray(services) && services.length > 0;
+      return hasPhoto && hasServices;
+    });
+
+    const providers = complete.map((r) => ({
       id: r.id,
       slug: r.get("slug") || "",
       name: r.get("name") || "",
@@ -145,6 +169,16 @@ routerAdd("GET", "/providers/active", (e) => {
         const active =
           (isStandalone && r.get("validated") === true) ||
           r.get("provider_request_status") === "validated";
+        const missingPhoto = !(r.get("avatar") || r.get("avatar_url"));
+        // See the same unwrapping note in the /providers/public handler
+        // above — r.get() on a JSONField returns a byte-array wrapper here,
+        // not a real JS array.
+        const rawServices = r.get("services");
+        const services =
+          rawServices && typeof rawServices.string === "function"
+            ? JSON.parse(rawServices.string() || "null")
+            : rawServices;
+        const missingServices = !(Array.isArray(services) && services.length > 0);
         return {
           id: r.id,
           name: r.get("name") || "",
@@ -155,6 +189,9 @@ routerAdd("GET", "/providers/active", (e) => {
           instagram: r.get("instagram") || "",
           active: active,
           accountType: isStandalone ? "standalone" : "linked_client",
+          missingPhoto: missingPhoto,
+          missingServices: missingServices,
+          profileComplete: !missingPhoto && !missingServices,
         };
       });
 
