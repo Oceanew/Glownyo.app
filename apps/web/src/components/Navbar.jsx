@@ -35,6 +35,19 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // With the mobile menu open, the page behind it is still the scroll
+  // container — a touch inside the (fixed, long) panel scrolls the page
+  // instead of the panel's own content. Locking body scroll while open
+  // makes every touch inside the panel act on the panel itself.
+  useEffect(() => {
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
   // Closes the account dropdown on an outside click/tap, so it behaves the
   // same way on touchscreens (tablet, phone) as it does with a mouse —
   // hover alone isn't enough to reliably reach "Déconnexion" on touch.
@@ -182,7 +195,7 @@ const Navbar = () => {
       </nav>
 
       {open && (
-        <div className="xl:hidden bg-[#0A0A0A]/98 backdrop-blur-md border-t border-[#C9922A]/15 px-5 pb-6 pt-2">
+        <div className="xl:hidden bg-[#0A0A0A]/98 backdrop-blur-md border-t border-[#C9922A]/15 px-5 pb-6 pt-2 max-h-[calc(100dvh-8rem)] sm:max-h-[calc(100dvh-10rem)] overflow-y-auto overscroll-contain">
           <ul className="flex flex-col">
             {links.map((l) => (
               <li key={l.to}>
