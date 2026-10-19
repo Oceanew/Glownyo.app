@@ -153,6 +153,7 @@ routerAdd("GET", "/providers/active", (e) => {
           specialty: r.get("specialty") || "",
           location: r.get("location") || "",
           instagram: r.get("instagram") || "",
+          parrain: r.get("parrain") || "",
           active: active,
           accountType: isStandalone ? "standalone" : "linked_client",
         };
@@ -243,12 +244,48 @@ routerAdd("GET", "/providers/pending", (e) => {
       instagram: r.get("instagram") || "",
       services: r.get("services") || "",
       bio: r.get("bio") || "",
+      parrain: r.get("parrain") || "",
       provider_request_status: r.get("provider_request_status") || "",
     }));
     return e.json(200, providers);
   } catch (err) {
     $app.logger().error("failed to list pending providers", "err", String(err));
     return e.internalServerError("failed to list pending providers", null);
+  }
+}, $apis.requireAuth("users"));
+
+// GET /providers/referrals — admin only. Groups every provider who answered
+// "Qui vous a parlé de Glownyo ?" at sign-up by who they named, across every
+// request status (pending, validated, refused) — this tracks word-of-mouth
+// activity, not just published profiles. Never exposed to providers
+// themselves (see provider-self-update-guard.pb.js, which also blocks a
+// provider from rewriting their own `parrain` after sign-up).
+routerAdd("GET", "/providers/referrals", (e) => {
+  if (!e.auth || e.auth.get("role") !== "admin") {
+    return e.unauthorizedError("unauthorized", null);
+  }
+
+  try {
+    const records = $app.findRecordsByFilter("users", 'parrain != ""', "name", 0, 0);
+
+    const byParrain = {};
+    records.forEach((r) => {
+      const parrain = r.get("parrain");
+      (byParrain[parrain] ||= []).push({
+        id: r.id,
+        name: r.get("name") || "",
+        provider_request_status: r.get("provider_request_status") || "",
+      });
+    });
+
+    const referrals = Object.keys(byParrain)
+      .sort((a, b) => a.localeCompare(b, "fr"))
+      .map((parrain) => ({ parrain, prestataires: byParrain[parrain] }));
+
+    return e.json(200, referrals);
+  } catch (err) {
+    $app.logger().error("failed to list provider referrals", "err", String(err));
+    return e.internalServerError("failed to list provider referrals", null);
   }
 }, $apis.requireAuth("users"));
 
@@ -273,6 +310,7 @@ routerAdd("POST", "/providers/request", (e) => {
   const location = body.location || "";
   const instagram = body.instagram || "";
   const bio = body.bio || "";
+  const parrain = String(body.parrain || "").trim();
 
   try {
     let existing = null;
@@ -301,6 +339,7 @@ routerAdd("POST", "/providers/request", (e) => {
       existing.set("location", location);
       existing.set("instagram", instagram);
       existing.set("bio", bio);
+      existing.set("parrain", parrain);
       existing.set("provider_request_status", "pending");
       existing.set("provider_request_notify", true);
       $app.save(existing);
@@ -320,6 +359,7 @@ routerAdd("POST", "/providers/request", (e) => {
       location: location,
       instagram: instagram,
       bio: bio,
+      parrain: parrain,
     });
     // Strong random password for brand-new standalone provider accounts. The
     // provider never sees it — they define their own password later via the
