@@ -60,7 +60,7 @@ const Navbar = () => {
           <img src={LOGO} alt="GlowNyo" className="h-24 sm:h-32 w-auto" />
         </Link>
 
-        <ul className="hidden lg:flex items-center gap-7 xl:gap-9">
+        <ul className="hidden xl:flex items-center gap-7 xl:gap-9">
           {links.map((l) => (
             <li key={l.to}>
               <NavLink
@@ -77,7 +77,7 @@ const Navbar = () => {
           ))}
         </ul>
 
-        <div className="hidden lg:flex items-center gap-3 whitespace-nowrap">
+        <div className="hidden xl:flex items-center gap-3 whitespace-nowrap">
           {isAuthed ? (
             <>
               {isDualRole && <SpaceSwitcher variant="compact" />}
@@ -173,7 +173,7 @@ const Navbar = () => {
         </div>
 
         <button
-          className="lg:hidden text-gold p-2 -mr-2"
+          className="xl:hidden text-gold p-2 -mr-2"
           onClick={() => setOpen((o) => !o)}
           aria-label="Menu"
         >
@@ -182,7 +182,7 @@ const Navbar = () => {
       </nav>
 
       {open && (
-        <div className="lg:hidden bg-[#0A0A0A]/98 backdrop-blur-md border-t border-[#C9922A]/15 px-5 pb-6 pt-2">
+        <div className="xl:hidden bg-[#0A0A0A]/98 backdrop-blur-md border-t border-[#C9922A]/15 px-5 pb-6 pt-2">
           <ul className="flex flex-col">
             {links.map((l) => (
               <li key={l.to}>
