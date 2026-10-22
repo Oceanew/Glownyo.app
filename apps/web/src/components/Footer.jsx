@@ -58,6 +58,7 @@ const Footer = () => {
           <p>© {new Date().getFullYear()} {t('footer_copyright', 'GlowNyo — glownyo.app. Tous droits réservés.')}</p>
           <div className="flex items-center gap-4">
             <Link to="/cgv" className="hover:text-gold transition">{t('footer_lien_cgv', 'Conditions générales de vente')}</Link>
+            <Link to="/politique-de-confidentialite" className="hover:text-gold transition">{t('footer_lien_confidentialite', 'Politique de confidentialité')}</Link>
             <p>{t('footer_paiement_texte', 'Paiement Mobile Money via FedaPay · Réservation directe sur GlowNyo')}</p>
           </div>
         </div>

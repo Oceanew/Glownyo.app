@@ -22,6 +22,17 @@ export function AuthProvider({ children }) {
     return auth.record;
   };
 
+  // Opens Google's consent popup and signs in with the resulting account.
+  // First connection for a given Google email creates a brand-new "client"
+  // account (enforced server-side, never a provider or an admin account —
+  // see pb_hooks/oauth2-create-defaults.pb.js); a Google email that matches
+  // an existing classic account just links to it instead of duplicating it.
+  const loginWithGoogle = async () => {
+    const auth = await pb.collection('users').authWithOAuth2({ provider: 'google' });
+    setUser(auth.record);
+    return auth.record;
+  };
+
   const signup = async (email, password, data = {}) => {
     await pb.collection('users').create({
       email,
@@ -91,6 +102,7 @@ export function AuthProvider({ children }) {
         hasProviderRequest,
         providerRequestRefused,
         login,
+        loginWithGoogle,
         signup,
         logout,
         deleteAccount,
