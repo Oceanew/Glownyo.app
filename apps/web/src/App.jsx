@@ -28,6 +28,7 @@ import AdminNewsPage from './pages/AdminNewsPage';
 import AdminSiteTextsPage from './pages/AdminSiteTextsPage';
 import AdminProviderOrderPage from './pages/AdminProviderOrderPage';
 import AdminReferralsPage from './pages/AdminReferralsPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 
 function App() {
     return (
@@ -56,6 +57,7 @@ function App() {
                         <Route path="/devenir-prestataire" element={<ProviderSignupPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/cgv" element={<TermsPage />} />
+                        <Route path="/politique-de-confidentialite" element={<PrivacyPolicyPage />} />
                         <Route path="/connexion" element={<LoginPage />} />
                         <Route path="/mes-rendez-vous" element={<ProtectedRoute><MesRendezVousPage /></ProtectedRoute>} />
                         <Route path="/mon-compte" element={<ProtectedRoute><AccountPage /></ProtectedRoute>} />

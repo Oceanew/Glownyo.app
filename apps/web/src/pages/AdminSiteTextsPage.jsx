@@ -14,6 +14,7 @@ const PAGES = [
   { value: 'faq', label: 'FAQ' },
   { value: 'contact', label: 'Contact' },
   { value: 'pied-de-page', label: 'Pied de page' },
+  { value: 'confidentialite', label: 'Politique de confidentialité' },
   { value: 'global', label: 'Boutons principaux' },
 ];
 

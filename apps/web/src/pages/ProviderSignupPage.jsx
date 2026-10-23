@@ -310,7 +310,9 @@ const ProviderSignupPage = () => {
 
         <p className="text-xs text-[#F5F0E6]/45">
           En envoyant cette demande, vous acceptez nos{' '}
-          <Link to="/cgv" className="text-gold hover:brightness-110 transition">conditions générales de vente</Link>.
+          <Link to="/cgv" className="text-gold hover:brightness-110 transition">conditions générales de vente</Link>
+          {' '}et notre{' '}
+          <Link to="/politique-de-confidentialite" className="text-gold hover:brightness-110 transition">politique de confidentialité</Link>.
         </p>
 
         <button

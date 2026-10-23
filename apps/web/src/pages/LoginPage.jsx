@@ -48,8 +48,19 @@ const PasswordField = ({ value, onChange, placeholder, minLength = 8, autoComple
   );
 };
 
+// Google's official "G" mark, used as-is on the sign-in button per Google's
+// branding guidelines (fixed colors, never recolored).
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+    <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.617z" />
+    <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" />
+    <path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z" />
+    <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" />
+  </svg>
+);
+
 const LoginPage = () => {
-  const { login, signup } = useAuth();
+  const { login, loginWithGoogle, signup } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || '/mes-rendez-vous';
@@ -58,6 +69,7 @@ const LoginPage = () => {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ email: '', password: '' });
   const [busy, setBusy] = useState(false);
+  const [googleBusy, setGoogleBusy] = useState(false);
   const [error, setError] = useState('');
   const [resetSent, setResetSent] = useState(false);
 
@@ -102,6 +114,23 @@ const LoginPage = () => {
       setError(msg);
     } finally {
       setBusy(false);
+    }
+  };
+
+  const onGoogleClick = async () => {
+    setError('');
+    setGoogleBusy(true);
+    try {
+      const rec = await loginWithGoogle();
+      if (rec?.role === 'admin') {
+        navigate('/admin', { replace: true });
+        return;
+      }
+      navigate(from, { replace: true });
+    } catch {
+      setError('Impossible de continuer avec Google. Réessayez, ou utilisez votre email et votre mot de passe.');
+    } finally {
+      setGoogleBusy(false);
     }
   };
 
@@ -155,6 +184,25 @@ const LoginPage = () => {
 
         <h1 className="mt-6 font-display text-2xl font-semibold">{titles[mode]}</h1>
         <p className="mt-2 text-sm text-[#F5F0E6]/60">{subtitles[mode]}</p>
+
+        {mode !== 'reset' && (
+          <>
+            <button
+              type="button"
+              onClick={onGoogleClick}
+              disabled={googleBusy || busy}
+              className="mt-6 w-full flex items-center justify-center gap-3 bg-white text-[#1F1F1F] font-medium px-6 py-3 rounded-full border border-[#C9922A]/20 hover:bg-white/90 transition disabled:opacity-60"
+            >
+              {googleBusy ? <Loader2 size={18} className="animate-spin" /> : <GoogleIcon />}
+              {mode === 'signup' ? 'Créer un compte avec Google' : 'Continuer avec Google'}
+            </button>
+            <div className="mt-5 flex items-center gap-3 text-xs text-[#F5F0E6]/40">
+              <div className="h-px flex-1 bg-[#C9922A]/15" />
+              ou
+              <div className="h-px flex-1 bg-[#C9922A]/15" />
+            </div>
+          </>
+        )}
 
         {mode === 'reset' && resetSent ? (
           <div className="mt-6 rounded-2xl border border-[#C9922A]/25 bg-gradient-to-b from-[#C9922A]/[0.06] to-transparent p-6 text-center">
@@ -257,6 +305,15 @@ const LoginPage = () => {
               pouvez réserver sans compte. Il sert uniquement à retrouver et gérer vos rendez-vous.
             </p>
           </div>
+        )}
+
+        {mode !== 'reset' && (
+          <p className="mt-3 text-xs text-[#F5F0E6]/45">
+            En continuant, vous acceptez nos{' '}
+            <Link to="/cgv" className="text-gold hover:brightness-110 transition">conditions générales de vente</Link>
+            {' '}et notre{' '}
+            <Link to="/politique-de-confidentialite" className="text-gold hover:brightness-110 transition">politique de confidentialité</Link>.
+          </p>
         )}
       </div>
 
